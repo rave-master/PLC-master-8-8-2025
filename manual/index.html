@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Manual – DENR-XI PENRO Tagum Personnel Locator</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+  }
+  
+  .main-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+  
+  h1, h2, h3 {
+    color: #1a4d2e;
+  }
+  
+  .section {
+    background: white;
+    padding: 30px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    border-left: 5px solid #1a4d2e;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+  }
+  
+  .nav-menu {
+    position: sticky;
+    top: 20px;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+  }
+  
+  .nav-item {
+    display: block;
+    padding: 12px 20px;
+    margin: 5px 0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #4a5568;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+  }
+  
+  .nav-item:hover {
+    background: #f7fafc;
+    color: #1a4d2e;
+    border-left-color: #1a4d2e;
+    transform: translateX(5px);
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  th {
+    background: linear-gradient(135deg, #1a4d2e, #2d5a3d);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  tr:hover {
+    background: #f8fafc;
+  }
+  
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .feature-card {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px 0;
+    border-left: 4px solid #4299e1;
+  }
+  
+  .step-number {
+    background: #1a4d2e;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+  }
+  
+  .highlight-box {
+    background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+    border: 1px solid #4fd1c7;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  .warning-box {
+    background: linear-gradient(135deg, #fef5e7, #fed7aa);
+    border: 1px solid #f6ad55;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  .screenshot {
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border: 3px solid #e2e8f0;
+    transition: transform 0.3s ease;
+  }
+  
+  .screenshot:hover {
+    transform: scale(1.02);
+  }
+  
+  .icon-text {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .icon-text svg {
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body class="p-6">
+
+<div class="max-w-7xl mx-auto">
+  <div class="main-container p-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold mb-4 flex items-center justify-center">
+        📘 <span class="ml-3">User Manual</span>
+      </h1>
+      <p class="text-xl text-gray-600 mb-2">DENR-XI PENRO TAGUM</p>
+      <p class="text-lg text-gray-500">Personnel Locator & Weekly Status Monitoring System</p>
+      <div class="mt-6 inline-block bg-green-100 text-green-800 px-6 py-2 rounded-full font-semibold">
+        Version 2.1 | Updated July 2025
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- Navigation Menu -->
+      <div class="lg:col-span-1">
+        <div class="nav-menu">
+          <h3 class="font-bold text-lg mb-4 text-center">📋 Quick Navigation</h3>
+          <nav>
+            <a href="#overview" class="nav-item">🏢 Overview</a>
+            <a href="#access" class="nav-item">🔐 System Access</a>
+            <a href="#profile" class="nav-item">👤 Profile & Status</a>
+            <a href="#dashboard" class="nav-item">📊 Dashboard View</a>
+            <a href="#restrictions" class="nav-item">🔒 Security</a>
+            <a href="#troubleshooting" class="nav-item">🔧 Troubleshooting</a>
+            <a href="#support" class="nav-item">💬 Support</a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="lg:col-span-3">
+        <!-- Section 1: Overview -->
+        <div id="overview" class="section">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            🏢 <span class="ml-3">1. System Overview</span>
+          </h2>
+          
+          <div class="highlight-box">
+            <h4 class="font-bold text-lg mb-2">🎯 Purpose</h4>
+            <p class="mb-4">This comprehensive system enables DENR-PENRO TAGUM personnel to efficiently update their weekly work status while providing authorized staff with real-time monitoring capabilities through an intuitive live dashboard.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <div class="feature-card">
+              <h4 class="font-bold mb-2">👥 For Personnel</h4>
+              <ul class="text-sm space-y-1">
+                <li>• Update daily work status</li>
+                <li>• Manage profile information</li>
+                <li>• Upload profile photos</li>
+                <li>• Track weekly schedules</li>
+              </ul>
+            </div>
+            <div class="feature-card">
+              <h4 class="font-bold mb-2">👨‍💼 For Supervisors</h4>
+              <ul class="text-sm space-y-1">
+                <li>• Monitor team status</li>
+                <li>• View live dashboard</li>
+                <li>• Generate reports</li>
+                <li>• Track attendance patterns</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: System Access -->
+        <div id="access" class="section">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            🔐 <span class="ml-3">2. Accessing the System</span>
+          </h2>
+          
+          <div class="warning-box mb-6">
+            <h4 class="font-bold mb-2">⚠️ Important Note</h4>
+            <p>Ensure you have a stable internet connection and use a modern web browser (Chrome, Firefox, Safari, or Edge) for the best experience.</p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <span class="step-number">1</span>
+              <div>
+                <h4 class="font-semibold">Open the Personnel Locator</h4>
+                <p class="text-gray-600">Navigate to the system URL provided by your IT administrator</p>
+              </div>
+            </div>
+
+            <img src="https://i.imgur.com/qXWSq36.png" alt="Login Screen" class="screenshot w-full max-w-2xl mx-auto my-6">
+
+            <div class="flex items-start">
+              <span class="step-number">2</span>
+              <div>
+                <h4 class="font-semibold mb-3">Choose Your Login Method</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <div class="icon-text">
+                      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                      </svg>
+                      <span class="font-semibold">Email & Password</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Use your official DENR email credentials</p>
+                  </div>
+                  
+                  <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <div class="icon-text">
+                      <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                      </svg>
+                      <span class="font-semibold">Google Login</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Sign in with your Google account</p>
+                  </div>
+                  
+                  <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <div class="icon-text">
+                      <svg class="w-6 h-6 text-blue-800" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      </svg>
+                      <span class="font-semibold">Facebook Login</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Use your Facebook credentials</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-start">
+              <span class="step-number">3</span>
+              <div>
+                <h4 class="font-semibold">Access Your Dashboard</h4>
+                <p class="text-gray-600">After successful login, you'll be automatically redirected to your <strong>Profile & Status Update</strong> page</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Profile & Status Update -->
+        <div id="profile" class="section">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            👤 <span class="ml-3">3. Profile & Status Update Page</span>
+          </h2>
+
+          <img src="https://i.imgur.com/5mNub5U.png" alt="Profile Update Interface" class="screenshot w-full max-w-3xl mx-auto mb-6">
+
+          <h3 class="text-xl font-semibold mb-4">🔧 Key Features</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+                </svg>
+                Profile Photo Upload
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Supported formats: JPG, PNG</li>
+                <li>• Maximum file size: 5MB</li>
+                <li>• Recommended: 300x300 pixels</li>
+                <li>• Updates instantly after upload</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                </svg>
+                Personal Information
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Full name (editable)</li>
+                <li>• Job designation</li>
+                <li>• Department/Division</li>
+                <li>• Weekly Status (options)</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                </svg>
+                Weekly Status Update
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Monday through Friday selection</li>
+                <li>• Multiple status options</li>
+                <li>• Color-coded indicators</li>
+                <li>• Real-time preview</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                Save & Sync
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Instant sync</li>
+                <li>• Automatic backup</li>
+                <li>• Success confirmation</li>
+                <li>• Error handling</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4">🎨 Status Types & Color Guide</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr>
+                  <th>Visual Indicator</th>
+                  <th>Status Type</th>
+                  <th>Description</th>
+                  <th>When to Use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="status-badge bg-green-200 text-green-800">🟢 Green</span></td>
+                  <td class="font-semibold">Office</td>
+                  <td>Present at the office</td>
+                  <td>Regular working days at PENRO office</td>
+                </tr>
+                <tr>
+                  <td><span class="status-badge bg-red-200 text-red-800">🔴 Red</span></td>
+                  <td class="font-semibold">On Leave</td>
+                  <td>Approved absence</td>
+                  <td>Vacation, sick leave, personal leave</td>
+                </tr>
+                <tr>
+                  <td><span class="status-badge bg-blue-200 text-blue-800">🔵 Blue</span></td>
+                  <td class="font-semibold">Work From Home</td>
+                  <td>Remote work arrangement</td>
+                  <td>Approved telecommuting days</td>
+                </tr>
+                <tr>
+                  <td><span class="status-badge bg-yellow-200 text-yellow-800">🟡 Yellow</span></td>
+                  <td class="font-semibold">With Office Pass</td>
+                  <td>Temporary office absence</td>
+                  <td>Short errands, meetings outside office</td>
+                </tr>
+                <tr>
+                  <td><span class="status-badge bg-purple-200 text-purple-800">🟣 Purple</span></td>
+                  <td class="font-semibold">On Field</td>
+                  <td>Field work assignment</td>
+                  <td>Site visits, inspections, surveys</td>
+                </tr>
+                <tr>
+                  <td><span class="status-badge bg-indigo-200 text-indigo-800">🔷 Indigo</span></td>
+                  <td class="font-semibold">Training</td>
+                  <td>Attending training/seminar</td>
+                  <td>Workshops, conferences, skill development</td>
+                </tr>
+                <tr>
+                  <td><span class="status-badge bg-gray-100 text-gray-600">⚪ Gray</span></td>
+                  <td class="font-semibold">No Status</td>
+                  <td>Status not yet updated</td>
+                  <td>Default state, requires update</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 4: Dashboard View -->
+        <div id="dashboard" class="section">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            📊 <span class="ml-3">4. Dashboard & Monitoring</span>
+          </h2>
+          
+          <div class="highlight-box">
+            <h4 class="font-bold text-lg mb-2">👨‍💼 Supervisor Access</h4>
+            <p>Authorized personnel can access the live monitoring dashboard to view real-time status of all team members, generate reports, and track attendance patterns.</p>
+          </div>
+
+          <img src="https://i.imgur.com/wwHWEd8.png" alt="Dashboard Interface" class="screenshot w-full max-w-3xl mx-auto mb-6">
+
+          <h3 class="text-xl font-semibold mb-4">🎯 Dashboard Purpose</h3>
+          <div class="highlight-box mb-6">
+            <p>The Dashboard serves as the central monitoring hub, displaying all personnel's weekly statuses in a comprehensive, easy-to-read format for effective management and oversight purposes.</p>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4">⚡ Key Dashboard Features</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                </svg>
+                Smart Search Box
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Search by personnel name</li>
+                <li>• Real-time filtering</li>
+                <li>• Case-insensitive search</li>
+                <li>• Instant results display</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l5-5z" clip-rule="evenodd"/>
+                </svg>
+                Division Filter
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Filter by department/division</li>
+                <li>• Show specific team members</li>
+                <li>• Dropdown selection menu</li>
+                <li>• Clear filter option</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                </svg>
+                Weekly Date Range
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Auto-updates to current week</li>
+                <li>• Monday to Friday display</li>
+                <li>• Clear date indicators</li>
+                <li>• Week navigation controls</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                </svg>
+                Comprehensive Status Table
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Profile photos display</li>
+                <li>• Name and designation</li>
+                <li>• Daily status indicators</li>
+                <li>• Color-coded status cells</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                </svg>
+                Navigation Controls
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Back to Profile button</li>
+                <li>• Travel Order access</li>
+                <li>• Analytics dashboard</li>
+                <li>• Quick navigation menu</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <h4 class="font-bold mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                </svg>
+                Feedback Integration
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Direct Google Form link</li>
+                <li>• Submit suggestions easily</li>
+                <li>• Report system issues</li>
+                <li>• Continuous improvement</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: System Restrictions -->
+        <div id="restrictions" class="section">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            🔒 <span class="ml-3">5. System Restrictions & Security</span>
+          </h2>
+          
+          <div class="warning-box mb-6">
+            <h4 class="font-bold mb-2">🛡️ Security Measures</h4>
+            <p>The system implements several security measures to protect sensitive personnel data and ensure authorized access only.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="feature-card border-l-4 border-red-500">
+              <h4 class="font-bold mb-3 flex items-center text-red-700">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                </svg>
+                Authentication Required
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Dashboard access requires login</li>
+                <li>• Session timeout after inactivity</li>
+                <li>• Automatic logout for security</li>
+                <li>• Unauthorized users redirected</li>
+              </ul>
+            </div>
+
+            <div class="feature-card border-l-4 border-yellow-500">
+              <h4 class="font-bold mb-3 flex items-center text-yellow-700">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+                Developer Tools Disabled
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Right-click context menu blocked</li>
+                <li>• F12 developer tools disabled</li>
+                <li>• Source code protection</li>
+                <li>• Prevents unauthorized access</li>
+              </ul>
+            </div>
+
+            <div class="feature-card border-l-4 border-blue-500">
+              <h4 class="font-bold mb-3 flex items-center text-blue-700">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                </svg>
+                Access Control
+              </h4>
+              <ul class="text-sm space-y-2">
+                <li>• Role-based permissions</li>
+                <li>• Authorized personnel only</li>
+                <li>• Secure data transmission</li>
+                <li>• Regular security updates</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="highlight-box mt-6">
+            <h4 class="font-bold mb-2">📋 Important Security Notes</h4>
+            <ul class="space-y-2">
+              <li>• Always log out when finished using the system</li>
+              <li>• Do not share your login credentials with others</li>
+              <li>• Report any suspicious activity to IT support immediately</li>
+              <li>• Use the system only for official DENR-PENRO business</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Section 6: Troubleshooting -->
+        <div id="troubleshooting" class="section">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            🔧 <span class="ml-3">6. Troubleshooting</span>
+          </h2>
+          
+          <h3 class="text-xl font-semibold mb-4">🔍 Common Issues & Solutions</h3>
+          
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full">
+              <thead>
+                <tr>
+                  <th class="text-left">Problem</th>
+                  <th class="text-left">Possible Cause</th>
+                  <th class="text-left">Solution</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-semibold text-red-700">Dashboard not loading</td>
+                  <td>User not logged in properly</td>
+                  <td>Return to login page and sign in again</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold text-red-700">Missing profile photo</td>
+                  <td>No photo uploaded yet</td>
+                  <td>Go to Profile page and upload your photo</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold text-red-700">Status not updating</td>
+                  <td>Internet connection or Firebase delay</td>
+                  <td>Refresh the page and try again</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold text-red-700">Search not working</td>
+                  <td>Typo in personnel name</td>
+                  <td>Check spelling and try different variations</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold text-red-700">Page loading slowly</td>
+                  <td>Poor internet connection</td>
+                  <td>Check network connection and refresh</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold text-red-700">Cannot access certain features</td>
+                  <td>Insufficient user permissions</td>
+                  <td>Contact administrator for access rights</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="space-y-4">
+            <div class="warning-box">
+              <h4 class="font-bold mb-2">🚫 Login Issues</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 class="font-semibold mb-2">Quick Fixes:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Clear browser cache and cookies</li>
+                    <li>• Try incognito/private browsing mode</li>
+                    <li>• Disable browser extensions temporarily</li>
+                    <li>• Check internet connection stability</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-2">If Still Not Working:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Try a different browser (Chrome, Firefox)</li>
+                    <li>• Contact IT support for password reset</li>
+                    <li>• Verify your account is still active</li>
+                    <li>• Check if system is under maintenance</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="warning-box">
+              <h4 class="font-bold mb-2">📷 Photo Upload Problems</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 class="font-semibold mb-2">File Requirements:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Maximum file size: 5MB</li>
+                    <li>• Supported formats: JPG, PNG only</li>
+                    <li>• Recommended size: 300x300 pixels</li>
+                    <li>• Avoid special characters in filename</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-2">Troubleshooting Steps:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Compress image if too large</li>
+                    <li>• Convert to JPG format if needed</li>
+                    <li>• Check internet connection during upload</li>
+                    <li>• Refresh page and try again</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="warning-box">
+              <h4 class="font-bold mb-2">💾 Status Not Saving</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 class="font-semibold mb-2">Before Saving:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Ensure stable internet connection</li>
+                    <li>• Select status for each required day</li>
+                    <li>• Wait for page to fully load</li>
+                    <li>• Don't navigate away too quickly</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-2">If Save Fails:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Wait for confirmation message</li>
+                    <li>• Try logging out and back in</li>
+                    <li>• Clear browser cache</li>
+                    <li>• Contact system administrator</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 7: Support -->
+        <div id="support" class="section">
+          <h2 class="text-3xl font-bold mb-4 flex items-center">
+            💬 <span class="ml-3">7. Support & Contact</span>
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="highlight-box">
+              <h4 class="font-bold text-lg mb-3 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                🆘 Technical Support
+              </h4>
+              <div class="space-y-2">
+                <p><strong>IT Help Desk:</strong> Look for Ren</p>
+                <p><strong>Email:</strong> info@rave-master.de</p>
+                <p><strong>Hours:</strong> Monday-Friday, 8:00 AM - 5:00 PM</p>
+                <p class="text-sm text-gray-600 mt-3">For system errors, login issues, and technical problems</p>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <h4 class="font-bold text-lg mb-3 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                </svg>
+                📋 Administrative Support
+              </h4>
+              <div class="space-y-2">
+                <p><strong>HR Department:</strong> Darlyn M. Acosta</p>
+                <p><strong>Email:</strong> penrodavaodelnorte@denr.gov.ph</p>
+                <p><strong>Hours:</strong> Monday-Friday, 8:00 AM - 5:00 PM</p>
+                <p class="text-sm text-gray-600 mt-3">For account access, policy questions, and user permissions</p>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <h4 class="font-bold text-lg mb-3 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                </svg>
+                💬 Feedback & Suggestions
+              </h4>
+              <div class="space-y-2">
+                <p><strong>Google Form:</strong> Available on dashboard</p>
+                <p><strong>Purpose:</strong> System improvements</p>
+                <p><strong>Response:</strong> Within 48 hours</p>
+                <p class="text-sm text-gray-600 mt-3">Submit suggestions, report bugs, or request new features</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8">
+            <div class="warning-box">
+              <h4 class="font-bold text-lg mb-3">🚨 Emergency Contact Protocol</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 class="font-semibold mb-2">System Down/Critical Issues:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Call IT Help Desk immediately: 09092534256</li>
+                    <li>• Email: info@rave-master.de</li>
+                    <li>• Provide detailed error description</li>
+                    <li>• Include screenshots if possible</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-2">Data Loss/Security Concerns:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Contact System Administrator immediately</li>
+                    <li>• Do not attempt to fix the issue yourself</li>
+                    <li>• Document what happened before the issue</li>
+                    <li>• Preserve any error messages or logs</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 text-center bg-gray-50 p-6 rounded-lg">
+            <h4 class="font-bold text-lg mb-2">📚 Additional Resources</h4>
+            <p class="text-gray-600 mb-4">For more detailed information, training materials, or system updates, visit the DENR-PENRO TAGUM intranet portal or contact your system administrator. If you encounter technical issues, contact the DENR-PENRO IT staff or send feedback through the provided Google Form link on the dashboard.</p>
+            <div class="flex justify-center items-center space-x-4 mt-4">
+              <div class="text-sm text-gray-500">
+                Last updated: July 2025 | Version 2.1
+              </div>
+              <div class="text-sm text-green-600 font-semibold">
+                ✅ System Status: Operational
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Smooth scrolling for navigation links
+document.querySelectorAll('.nav-item').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href').substring(1);
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+
+// Highlight active navigation item
+window.addEventListener('scroll', function() {
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+  
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    if (scrollY >= (sectionTop - 200)) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  navItems.forEach(item => {
+    item.classList.remove('bg-green-100', 'text-green-800', 'border-green-500');
+    if (item.getAttribute('href').substring(1) === current) {
+      item.classList.add('bg-green-100', 'text-green-800');
+      item.style.borderLeftColor = '#1a4d2e';
+    }
+  });
+});
+</script>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a6f46d363dfec5',t:'MTc1NDQwMzgzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.onkeydown = function(e) {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 'I'.charCodeAt(0))) {
+      return false;
+    }
+  };
+</script>
+
+
+</html>

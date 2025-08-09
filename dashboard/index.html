@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DENR-XI PENRO Tagum Personnel</title>
+
+  <link rel="icon" href="https://i.imgur.com/ZRlEx8f.png" type="image/x-icon">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite"></script>
+
+  <style>
+    body {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+    }
+    .glass {
+      background: rgba(28, 27, 106, 0.15);
+      backdrop-filter: blur(30px);
+      box-shadow: 0 8px 32px 0 rgba(7, 7, 7, 0.626);
+    }
+    .fade-in {
+      animation: fadeIn 1.2s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <style>
+  #bgVideo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    pointer-events: none;
+  }
+  body {
+    background: none !important; /* remove fallback background */
+  }
+</style>
+
+</head>
+<body class="text-black font-sans">
+  <video autoplay muted loop playsinline id="bgVideo">
+  <source src="https://ia801005.us.archive.org/19/items/office_202507/OFFICE.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+  <div class="container mx-auto p-9 fade-in">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <h1 class="text-5xl font-bold bg-clip-text text-red-700  animate-bounce transition-transform duration-300 hover:scale-105 hover:rotate-1 cursor-pointer">
+        DENR-XI PENRO TAGUM<br>Personnel Weekly Status
+      </h1>
+      <div class="flex flex-col items-end space-y-2 mr-2">
+        
+      </div>
+      <div class="flex items-center space-x-4 mt-4 md:mt-0">
+        <div id="datetime" class="text-white text-sm font-semibold"></div>
+        <button 
+          onclick="logout()" 
+          class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow-lg transition-transform duration-200 transform hover:scale-110 hover:-translate-y-1"
+        >Logout</button>
+      </div>
+    </div>
+   <div>
+      <a href="https://forms.gle/XNxCJF3cDWWdwSmW8" target="_blank" rel="noopener noreferrer"
+       class="inline-block bg-red-500 text-white font-semibold py-2 px-5 rounded shadow-lg transition duration-200 transform hover:scale-105 hover:bg-red-600 hover:-translate-y-1">
+      📋 Give  Feedback
+      </a>
+    </div> <br>
+    <button 
+  id="backButton" 
+  onclick="window.location.href='index.html'"
+  class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded shadow-lg mr-2 transition-transform duration-200 transform hover:scale-110 hover:-translate-y-1">
+  👨‍💼Back to Profile
+</button> 
+
+<button 
+  onclick="window.open('https://denrxisystems.com/denr_personnel_portal/login', '_blank')" 
+  class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow-lg mr-2 transition-transform duration-200 transform hover:scale-110 hover:-translate-y-1">
+  ✈️Travel Order
+</button> 
+
+<button 
+  id="AnalyticsButton" 
+  onclick="window.location.href='/Analytics'"
+  class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded shadow-lg mr-2 transition-transform duration-200 transform hover:scale-110 hover:-translate-y-1">
+  📊Analytics
+</button> 
+    <!-- Search + Filter -->
+    <div class="flex flex-wrap justify-between items-center gap-2 mb-2">
+      <input id="search" type="text" placeholder="Search staff by name..." oninput="loadDashboard()" class="px-4 py-2 border rounded text-black w-full md:w-1/2">
+
+      <select id="divisionFilter" onchange="loadDashboard()" class="px-4 py-2 border rounded text-black w-full md:w-1/3">
+        <option value="">Filter by Division/Section</option>
+        <option value="MSD">MSD</option>
+        <option value="Planning">Planning</option>
+        <option value="Personnel">Personnel</option>
+        <option value="Cashier">Cashier</option>
+        <option value="Accounting">Accounting</option>
+        <option value="Records">records</option>
+        <option value="PENRO">PENRO</option>
+        <option value="GSU">GSU</option>
+        <option value="TSD">TSD</option>
+        <option value="MES">MES</option>
+        <option value="CDS">CDS</option>
+        <option value="RPS">RPS</option>
+      </select>
+    </div>
+
+    <!-- Week Range -->
+    <div id="week-range" class="text-white text-sm mb-3 font-semibold italic">
+      class="text-4xl"
+    </div>
+    <!-- Customizable Table Header -->
+    <div class="overflow-auto glass rounded-lg sticky top-0 z-10 mb-4 border-2 border-red-600">
+      <table class="table-auto w-full text-center text-sm border-2 border-red-600">
+        <thead class="bg-white bg-opacity-100 text-black uppercase border-b-2 border-red-600">
+          <tr>
+             <th class="px-4 py-2 border-b-2 border-red-600">Photo</th>
+            <th class="px-5 py-2 border-b-2 border-red-600">Name of Personnel</th>
+            <th class="px-5 py-2 border-b-2 border-red-600">Designation<br>Division/Section</th>
+            <th class="px-4 py-2 border-b-2 border-red-600" id="monHeader">Mon</th>
+            <th class="px-4 py-2 border-b-2 border-red-600" id="tueHeader">Tue</th>
+            <th class="px-4 py-2 border-b-2 border-red-600" id="wedHeader">Wed</th>
+            <th class="px-4 py-2 border-b-2 border-red-600" id="thuHeader">Thu</th>
+            <th class="px-4 py-2 border-b-2 border-red-600" id="friHeader">Fri</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <!-- Table -->
+    <div class="overflow-auto glass rounded-lg border-2 border-red-600">
+      <table class="table-auto w-full text-center text-sm border-2 border-red-600">
+      <thead class="bg-white bg-opacity-30 text-blue uppercase border-b-2 border-red-600" style="color: rgba(152, 23, 23, 0.679);">
+        <tr>
+        <th class="px-4 py-2 border-b-2 border-red-600">Photo</th>
+        <th class="px-4 py-2 border-b-2 border-red-600">Name</th>
+        <th class="px-4 py-2 border-b-2 border-red-600">Designation-Division/Section</th>
+        <th class="px-4 py-2 border-b-2 border-red-600" id="monHeader">Mon</th>
+        <th class="px-4 py-2 border-b-2 border-red-600" id="tueHeader">Tue</th>
+        <th class="px-4 py-2 border-b-2 border-red-600" id="wedHeader">Wed</th>
+        <th class="px-4 py-2 border-b-2 border-red-600" id="thuHeader">Thu</th>
+        <th class="px-4 py-2 border-b-2 border-red-600" id="friHeader">Fri</th>
+        </tr>
+      </thead>
+      <tbody id="staff-table" class="text-black bg-white bg-opacity-80"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBjYPyVv9qC88JGD8N1tnDZLT0hh1sZUtQ",
+      authDomain: "locator-66521.firebaseapp.com",
+      projectId: "locator-66521",
+      storageBucket: "locator-66521.appspot.com",
+      messagingSenderId: "322028471975",
+      appId: "1:322028471975:web:ee77430c76935588187d82",
+      measurementId: "G-S87YVN1RX4",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
+    const statusColor = (status) => {
+      const s = (status || "").toLowerCase();
+      let base = "border border-gray-400";
+      if (s.includes("office")) return `${base} bg-green-200 text-green-800 font-bold`;
+      if (s.includes("leave")) return `${base} bg-red-200 text-red-800 font-bold`;
+      if (s.includes("home")) return `${base} bg-blue-200 text-blue-800 font-bold`;
+      if (s.includes("out")) return `${base} bg-yellow-200 text-yellow-800 font-bold`;
+      if (s.includes("field")) return `${base} bg-purple-200 text-purple-800 font-bold`;
+      if (s.includes("train")) return `${base} bg-indigo-200 text-indigo-800 font-bold`;
+      return `${base} bg-gray-100 text-gray-800`;
+    };
+
+    const statusIcon = (status) => {
+      const s = (status || "").toLowerCase();
+      if (s.includes("office")) return `<span title="In the Office">🟢</span>`;
+      if (s.includes("leave")) return `<span title="On Leave">🔴</span>`;
+      if (s.includes("home")) return `<span title="Work From Home">🔵</span>`;
+      if (s.includes("out")) return `<span title="W/ Office Pass">🟡</span>`;
+      if (s.includes("field")) return `<span title="On-Field">🟣</span>`;
+      if (s.includes("train")) return `<span title="Training">🔷</span>`;
+      return `<span title="No Status">⚪</span>`;
+    };
+
+    const getWeekDates = () => {
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // Sunday = 0
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
+      return Array.from({ length: 5 }, (_, i) => {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
+        return date;
+      });
+    };
+
+    const formatDate = (date) => date.getDate();
+
+    const formatWeekRange = (dates) => {
+      const options = { month: 'long', day: 'numeric' };
+      const start = dates[0].toLocaleDateString('en-US', options);
+      const end = dates[4].toLocaleDateString('en-US', options);
+      const year = dates[4].getFullYear();
+      const weekNumber = getWeekNumber(dates[0]);
+      return `Week ${weekNumber}: ${start} – ${end}, ${year}`;
+    };
+
+    const getWeekNumber = (date) => {
+      const firstJan = new Date(date.getFullYear(), 0, 1);
+      const dayOfYear = ((date - firstJan + 86400000) / 86400000);
+      return Math.ceil((dayOfYear + firstJan.getDay()) / 7);
+    };
+
+    window.logout = async () => {
+      try {
+        await signOut(auth);
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Logout failed: " + err.message);
+      }
+    };
+
+    window.loadDashboard = async () => {
+      const searchQuery = document.getElementById("search").value.toLowerCase();
+      const divisionFilter = document.getElementById("divisionFilter").value.toLowerCase();
+      const staffTable = document.getElementById("staff-table");
+      staffTable.innerHTML = "";
+
+      const weekDates = getWeekDates();
+      document.getElementById('monHeader').textContent = `Mon – ${formatDate(weekDates[0])}`;
+      document.getElementById('tueHeader').textContent = `Tue – ${formatDate(weekDates[1])}`;
+      document.getElementById('wedHeader').textContent = `Wed – ${formatDate(weekDates[2])}`;
+      document.getElementById('thuHeader').textContent = `Thu – ${formatDate(weekDates[3])}`;
+      document.getElementById('friHeader').textContent = `Fri – ${formatDate(weekDates[4])}`;
+      document.getElementById('week-range').textContent = formatWeekRange(weekDates);
+
+      try {
+        const snapshot = await getDocs(collection(db, "users"));
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const name = data.name || "";
+          const designation = data.designation || "";
+
+          if (!name.toLowerCase().includes(searchQuery)) return;
+          if (divisionFilter && !designation.toLowerCase().includes(divisionFilter)) return;
+
+          const photo = data.photoURL ? `<img src="${data.photoURL}" alt="photo" class="w-15 h-15 rounded-full mx-auto" />` : "";
+
+          const row = `
+            <tr class="border-b">
+                <td class="px-3 py-3 text-center">
+                <div class="w-20 h-20 mx-auto rounded-full border-2 border-black overflow-hidden flex items-center justify-center bg-white bg-opacity-50">
+                  ${photo}
+                </div>
+                </td>
+                <td class="px-4 py-2 uppercase font-bold">${name}</td>
+                <td class="px-4 py-2 uppercase font-bold">${designation}</td>
+              <td class="px-2 py-1 ${statusColor(data.weeklyStatus?.monday)}">${statusIcon(data.weeklyStatus?.monday)} ${data.weeklyStatus?.monday || ""}</td>
+              <td class="px-2 py-1 ${statusColor(data.weeklyStatus?.tuesday)}">${statusIcon(data.weeklyStatus?.tuesday)} ${data.weeklyStatus?.tuesday || ""}</td>
+              <td class="px-2 py-1 ${statusColor(data.weeklyStatus?.wednesday)}">${statusIcon(data.weeklyStatus?.wednesday)} ${data.weeklyStatus?.wednesday || ""}</td>
+              <td class="px-2 py-1 ${statusColor(data.weeklyStatus?.thursday)}">${statusIcon(data.weeklyStatus?.thursday)} ${data.weeklyStatus?.thursday || ""}</td>
+              <td class="px-2 py-1 ${statusColor(data.weeklyStatus?.friday)}">${statusIcon(data.weeklyStatus?.friday)} ${data.weeklyStatus?.friday || ""}</td>
+            </tr>
+          `;
+          staffTable.insertAdjacentHTML("beforeend", row);
+        });
+      } catch (err) {
+        alert("Failed to load dashboard: " + err.message);
+      }
+    };
+
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.href = "index.html";
+      } else {
+        loadDashboard();
+      }
+    });
+  </script>
+
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      const options = {
+        weekday: 'long', year: 'numeric', month: 'long',
+        day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+      };
+      document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+  </script>
+  <footer class="text-center text-white text-sm py-4 mt-8">
+  <div class="container mx-auto px-4">
+    
+    <a href="privacy policy.html" class="text-white hover:underline mx-2">Privacy Policy</a> |
+    <a href="terms and condition.html" class="text-white hover:underline mx-2">Terms and Condition</a> |
+    <a href="manual.html" class="text-white hover:underline mx-2">User Manual</a>
+    
+  </div>
+</footer>
+</body>
+
+  <script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.onkeydown = function(e) {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 'I'.charCodeAt(0))) {
+      return false;
+    }
+  };
+</script>
+
+</html>

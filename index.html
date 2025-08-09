@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DENR-XI PENRO Personnel Locator</title>
+  <link rel="icon" href="https://ia601205.us.archive.org/12/items/icon_20250717/icon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat; 
+      min-height: 100vh;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.868);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 #1312116a;
+    }
+
+    .fade-in {
+      animation: fadeIn 1.2s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  
+  <script>
+    
+    const backgroundImageURL = "https://ia801009.us.archive.org/31/items/office-image/office%20image.jpg";
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url('${backgroundImageURL}')`;
+    });
+
+    function searchGoogle() {
+      const query = document.getElementById('google-search-input').value;
+      if (query) {
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+      }
+    }
+  </script>
+  <style>
+  body {
+    background-repeat: repeat;
+    background-size: cover;
+    animation: pan-background 60s linear infinite;
+    background-attachment: fixed;
+  }
+
+  @keyframes pan-background {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 0%;
+    }
+  }
+</style>
+
+</head>
+
+<body class="text-red-700 font-aerial black">
+  <div class="container mx-auto px-4 py-14 fade-in">
+    <h1 class="text-6xl font-bold text-center mb-10 animate-bounce bg-clip-text
+">DENR-XI PENRO Tagum<br> Personnel Locator</h1>
+
+<!--Centered News Card -->
+<div class="flex justify-center mt-4 mb-8">
+  <div class="glass rounded-xl max-w-2xl w-full p-2 text-black shadow-lg border-2 border-red-600">
+    <h3 class="text-2xl font-bold mb-2 text-green-800 text-center">🌿DENR-XI PENRO DDN Latest Services</h3>
+    <p class="mb-4 text-center">Loading news...</p>
+    <iframe 
+      class="w-full rounded shadow-md" 
+      height="315" 
+      src="https://www.youtube.com/embed/mVzG2hziv40?autoplay=1&mute=1" 
+      frameborder="0" 
+      allow="autoplay; encrypted-media" 
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+
+<div class="flex justify-center mb-8">
+  <div class="flex items-center border-2 border-red-600 rounded-full shadow-md">
+    <input type="text" id="google-search-input" placeholder="🔍Search Google..."
+      class="w-full px-4 py-2 rounded-l-full focus:outline-none text-black">
+    <button onclick="searchGoogle()"
+      class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-r-full">Search</button>
+  </div>
+</div>
+
+<div id="auth-section" class="glass rounded-xl max-w-md mx-auto p-6 mb-8 space-y-4 text-black border-2 border-red-600">
+  <!-- Email & Password Inputs -->
+  <input id="email" type="email" placeholder="Email" class="w-full px-4 py-2 rounded border" />
+  <input id="password" type="password" placeholder="Password" class="w-full px-4 py-2 rounded border" />
+
+  <!-- Register and Login Buttons -->
+  <div class="flex flex-wrap gap-2 justify-center">
+    <button onclick="register()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+      Register
+    </button>
+    <button onclick="login()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+      🔑 Login
+    </button>
+  </div>
+
+  <!-- Divider -->
+  <div class="flex items-center my-4">
+    <hr class="flex-grow border-t border-gray-300">
+    <span class="mx-2 text-sm text-gray-500">or login with</span>
+    <hr class="flex-grow border-t border-gray-300">
+  </div>
+
+  <!-- Social Login Buttons -->
+  <div class="flex flex-col gap-2">
+    <button id="google-login" class="bg-pink-500 hover:bg-red-600 text-white px-4 py-2 rounded flex items-center justify-center gap-2 transition transform duration-300 ease-in-out hover:scale-105">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5">
+      Google
+    </button>
+
+    <button id="facebook-login" class="bg-yellow-800 hover:bg-blue-900 text-white px-4 py-2 rounded flex items-center justify-center gap-2 transition transform duration-300 ease-in-out hover:scale-105">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" alt="Facebook" class="w-5 h-5">
+      Facebook
+    </button>
+  </div>
+</div>
+
+<div id="profile-form" class="glass rounded-xl max-w-2xl mx-auto p-6 mb-6 hidden text-black border-2 border-red-600">
+  <h2 class="text-2xl font-semibold mb-4 text-blue-800">Profile Setup</h2>
+  <div class="flex flex-col items-center mb-4">
+    <img id="profile-photo-preview" src=""
+      class="w-20 h-20 max-auto rounded-full overflow-hidden flex items-center justify-center object-cover hidden mb-2 border-2 border-black" />
+    <input id="photos" type="file" accept="image/*" class="w-full px-4 py-2 rounded border" />
+  </div>
+  <input id="name" type="text" placeholder="Full Name" class="w-full mb-2 px-4 py-2 rounded border" />
+  <input id="designation" type="text" placeholder="Designation-Division/Section"
+    class="w-full mb-4 px-4 py-2 rounded border" />
+  <button onclick="submitProfile()"
+    class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">Submit Profile</button>
+</div>
+
+<div id="status-form" class="glass rounded-xl max-w-4xl mx-auto p-6 hidden text-black border-2 border-red-600">
+  <h2 class="text-2xl font-semibold mb-4 text blue">Weekly Status</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <div>
+      <label class="block mb-1 text-blue">Monday</label>
+      <select id="monday-status" class="w-full border rounded px-2 py-2 mb-2">
+        <option>Office</option>
+        <option>Work From Home</option>
+        <option>On Leave</option>
+        <option>Absent</option>
+        <option>W/ Office Pass</option>
+        <option>Training</option>
+        <script>
+          function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+          }
+          setInterval(updateDateTime, 1000);
+          updateDateTime();
+        </script>
+
+        <footer class="text-center text-white text-sm py-6 mt-8">
+          <div class="container mx-auto px-4">
+            <a href="/search" class="text-white hover:underline mx-2">How Search works</a> |
+            <a href="/privacy-policy" class="text-white hover:underline mx-2">Privacy Policy</a> |
+            <a href="terms-and-condition" class="text-white hover:underline mx-2">Terms And condition</a> |
+            <a href="/manual" class="text-white hover:underline mx-2">User Manual</a>
+         
+          </div>
+        </footer>
+</body>
+
+<option>On-Field</option>
+</select>
+<label class="block mb-1 text-blue">Tuesday</label>
+<select id="tuesday-status" class="w-full border rounded px-2 py-2 mb-2">
+  <option>Office</option>
+  <option>Work From Home</option>
+  <option>On Leave</option>
+  <option>Absent</option>
+  <option>W/ Office Pass</option>
+  <option>Training</option>
+  <option>On-Field</option>
+</select>
+<label class="block mb-1 text-blue">Wednesday</label>
+<select id="wednesday-status" class="w-full border rounded px-2 py-2 mb-2">
+  <option>Office</option>
+  <option>Work From Home</option>
+  <option>On Leave</option>
+  <option>Absent</option>
+  <option>W/ Office Pass</option>
+  <option>Training</option>
+  <option>On-Field</option>
+</select>
+<label class="block mb-1 text-blue">Thursday</label>
+<select id="thursday-status" class="w-full border rounded px-2 py-2 mb-2">
+  <option>Office</option>
+  <option>Work From Home</option>
+  <option>On Leave</option>
+  <option>Absent</option>
+  <option>W/ Office Pass</option>
+  <option>Training</option>
+  <option>On-Field</option>
+</select>
+<label class="block mb-1 text-blue">Friday</label>
+<select id="friday-status" class="w-full border rounded px-2 py-2 mb-2">
+  <option>Office</option>
+  <option>Work From Home</option>
+  <option>On Leave</option>
+  <option>Absent</option>
+  <option>W/ Office Pass</option>
+  <option>Training</option>
+  <option>On-Field</option>
+</select>
+<button onclick="submitProfile()"
+  class="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">Update</button>
+</div>
+<div>
+  <h2 class="text-2xl font-semibold mb-4 text blue">Current Week</h2>
+  <div id="week-range" class="text-lg font-medium text-gray-700 mb-4"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function getWeekRange() {
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+        const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Adjust to Monday of the current week
+        const monday = new Date(today.setDate(diff));
+        const friday = new Date(today.setDate(monday.getDate() + 4));
+
+        const year = monday.getFullYear();
+        const getWeekNumber = (d) => {
+          d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+          d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+          const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+          return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        };
+
+        const weekNumber = getWeekNumber(monday);
+
+        const options = { month: 'long', day: 'numeric' };
+        const mondayFormatted = monday.toLocaleDateString('en-US', options);
+        const fridayFormatted = friday.toLocaleDateString('en-US', options);
+
+        return `Week ${weekNumber}: ${mondayFormatted} – ${fridayFormatted}, ${year}`;
+      }
+
+      document.getElementById('week-range').textContent = getWeekRange();
+    });
+  </script>
+
+  <iframe 
+  class="w-full rounded shadow-md" 
+  height="315" 
+  src="https://www.youtube.com/embed/g6pgU0K_FUs?autoplay=1&mute=1" 
+  frameborder="0" 
+  allow="autoplay; encrypted-media" 
+  allowfullscreen>
+</iframe>
+
+</div>
+</div>
+</div>
+
+<div id="go-dashboard" class="text-center mt-6 hidden">
+  <a href="/dashboard/"
+    class="inline-block bg-indigo-600 hover:bg-indigo-800 text-white py-2 px-6 rounded-full shadow-lg">View Staff
+    Weekly Status</a>
+</div>
+
+<div id="datetime" class="text-white text-center mt-6 text-sm"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    GoogleAuthProvider,
+    FacebookAuthProvider,
+    signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL,
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBjYPyVv9qC88JGD8N1tnDZLT0hh1sZUtQ",
+    authDomain: "locator-66521.firebaseapp.com",
+    projectId: "locator-66521",
+    storageBucket: "locator-66521.appspot.com",
+    messagingSenderId: "322028471975",
+    appId: "1:322028471975:web:ee77430c76935588187d82",
+    measurementId: "G-S87YVN1RX4",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const db = getFirestore();
+  const storage = getStorage();
+  const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
+
+  const authSection = document.getElementById("auth-section");
+  const profileForm = document.getElementById("profile-form");
+  const statusForm = document.getElementById("status-form");
+  const dashboardLink = document.getElementById("go-dashboard");
+  const photoInput = document.getElementById("photos");
+  const photoPreview = document.getElementById("profile-photo-preview");
+
+  photoInput.addEventListener("change", () => {
+    const file = photoInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        photoPreview.src = reader.result;
+        photoPreview.classList.remove("hidden");
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      authSection.classList.add("hidden");
+      profileForm.classList.remove("hidden");
+      statusForm.classList.remove("hidden");
+      dashboardLink.classList.remove("hidden");
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("name").value = data.name || "";
+        document.getElementById("designation").value = data.designation || "";
+        if (data.photoURL) {
+          photoPreview.src = data.photoURL;
+          photoPreview.classList.remove("hidden");
+        }
+        if (data.weeklyStatus) {
+          document.getElementById("monday-status").value = data.weeklyStatus.monday || "";
+          document.getElementById("tuesday-status").value = data.weeklyStatus.tuesday || "";
+          document.getElementById("wednesday-status").value = data.weeklyStatus.wednesday || "";
+          document.getElementById("thursday-status").value = data.weeklyStatus.thursday || "";
+          document.getElementById("friday-status").value = data.weeklyStatus.friday || "";
+        }
+      } else {
+        await setDoc(docRef, {
+          name: user.displayName || "",
+          designation: "",
+          photoURL: user.photoURL || "",
+          weeklyStatus: {},
+        });
+      }
+    } else {
+      authSection.classList.remove("hidden");
+      profileForm.classList.add("hidden");
+      statusForm.classList.add("hidden");
+      dashboardLink.classList.add("hidden");
+    }
+  });
+
+  window.register = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Registered successfully!");
+    } catch (error) {
+      alert("Registration error: " + error.message);
+    }
+  };
+
+  window.login = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("Logged in!");
+    } catch (error) {
+      alert("Login error: " + error.message);
+    }
+  };
+
+  document.getElementById("google-login").addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
+          name: user.displayName,
+          designation: "",
+          photoURL: user.photoURL,
+          weeklyStatus: {},
+        });
+      }
+      alert(`Logged in as ${user.displayName}`);
+    } catch (error) {
+      alert("Google login error: " + error.message);
+    }
+  });
+
+  document.getElementById("facebook-login").addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user;
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
+          name: user.displayName,
+          designation: "",
+          photoURL: user.photoURL,
+          weeklyStatus: {},
+        });
+      }
+      alert(`Logged in as ${user.displayName}`);
+    } catch (error) {
+      alert("Facebook login error: " + error.message);
+    }
+  });
+
+  window.submitProfile = async () => {
+    const user = auth.currentUser;
+    if (!user) return alert("You must be logged in.");
+
+    const name = document.getElementById("name").value.trim();
+    const designation = document.getElementById("designation").value.trim();
+    const file = photoInput.files[0];
+
+    if (!name || !designation) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    let photoURL = "";
+
+    if (file) {
+      try {
+        const photoRef = ref(storage, `photos/${user.uid}`);
+        await uploadBytes(photoRef, file);
+        photoURL = await getDownloadURL(photoRef);
+      } catch (err) {
+        alert("Photo upload failed: " + err.message);
+        return;
+      }
+    } else {
+      const existingDoc = await getDoc(doc(db, "users", user.uid));
+      if (existingDoc.exists()) {
+        photoURL = existingDoc.data().photoURL || "";
+      }
+    }
+
+    const weeklyStatus = {
+      monday: document.getElementById("monday-status").value,
+      tuesday: document.getElementById("tuesday-status").value,
+      wednesday: document.getElementById("wednesday-status").value,
+      thursday: document.getElementById("thursday-status").value,
+      friday: document.getElementById("friday-status").value,
+    };
+
+    try {
+      await setDoc(
+        doc(db, "users", user.uid),
+        { name, designation, photoURL, weeklyStatus },
+        { merge: true }
+      );
+      alert("Profile and weekly status updated successfully!");
+    } catch (err) {
+      alert("Error saving profile: " + err.message);
+    }
+  };
+</script>
+
+<script>
+  function updateDateTime() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+  }
+  setInterval(updateDateTime, 1000);
+  updateDateTime();
+</script>
+
+<footer class="text-center text-white text-sm py-4 mt-8">
+  <div class="container mx-auto px-4">
+    <a href="/search" class="text-white hover:underline mx-2">How Search works</a> |
+    <a href="/privacy-policy" class="text-white hover:underline mx-2">Privacy Policy</a> |
+    <a href="terms-and-condition" class="text-white hover:underline mx-2">Terms And condition</a> |
+    <a href="/manual" class="text-white hover:underline mx-2">User Manual</a>
+    
+  </div>
+</footer>
+</body>
+<script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.onkeydown = function(e) {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 'I'.charCodeAt(0))) {
+      return false;
+    }
+  };
+</script>
+
+</html>

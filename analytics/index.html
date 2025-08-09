@@ -1,0 +1,1802 @@
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBjYPyVv9qC88JGD8N1tnDZLT0hh1sZUtQ",
+    authDomain: "locator-66521.firebaseapp.com",
+    projectId: "locator-66521",
+    storageBucket: "locator-66521.appspot.com",
+    messagingSenderId: "322028471975",
+    appId: "1:322028471975:web:ee77430c76935588187d82",
+    measurementId: "G-S87YVN1RX4",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // Not logged in -> redirect to login page
+      window.location.href = 'index.html';
+    }
+    // else do nothing, user is authenticated
+  });
+</script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PENRO Personnel Status Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-button {
+      padding: 12px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: none;
+      font-size: 1rem;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+    }
+    
+    .tab-button:first-child {
+      border-top-left-radius: 12px;
+    }
+    
+    .tab-button:last-child {
+      border-top-right-radius: 12px;
+    }
+    
+    .tab-button.active {
+      background: rgba(59, 130, 246, 0.9);
+      color: white;
+      border-color: rgba(59, 130, 246, 0.3);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+    
+    .tab-button:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.2);
+      color: #1f2937;
+      transform: translateY(-2px);
+    }
+    
+    .tab-content {
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0 16px 16px 16px;
+      padding: 32px;
+      min-height: 500px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .Office { 
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    .WFH { 
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+    }
+    .Training { 
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
+    }
+    .Leave { 
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    .w-office-pass { 
+      background: linear-gradient(135deg, #ec4899, #be185d);
+      color: white;
+    }
+    .on-field { 
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      color: white;
+    }
+    .Absent { 
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    }
+    
+    .table-row:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 12px 0;
+    }
+    
+    .stat-label {
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 3px;
+      margin-top: 12px;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .google-sheets-section {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+      border: 2px solid rgba(16, 185, 129, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid #3b82f6;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .success-notification {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    
+    .auto-refresh-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 20px;
+      font-size: 0.875rem;
+      color: #059669;
+    }
+    
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .connection-online {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .connection-offline {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    
+    .connection-offline .pulse-dot {
+      background: #ef4444;
+      animation: none;
+    }
+    
+    .connection-offline span {
+      color: #dc2626;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Header -->
+  <div class="glass-card mx-4 mt-6 mb-8 p-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            PENRO Personnel Status Dashboard
+          </h1>
+          <p class="text-gray-600">Live Workforce Analytics • Personnel Management System</p>
+           <p class="text-gray-600" style="font-size:.75rem; font-style:italic;"> This page is updated daily at 5:00 PM on regular working days (Monday to Friday)</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <!-- Online Status Indicator -->
+          <div id="connection-status" class="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 border border-gray-200">
+            <div class="loading-spinner w-4 h-4 border-2 border-gray-300 border-t-blue-500"></div>
+            <span class="text-sm font-medium text-gray-600">Loading...</span>
+          </div>
+          
+          <!-- Week Information -->
+          <div class="flex items-center gap-4 text-sm text-gray-600">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span id="header-week-info" class="font-medium">Week 31 • Jul 29 - Aug 2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Tab Navigation -->
+    <div class="flex flex-wrap border-b-0 mb-0 overflow-x-auto">
+      <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+      <button class="tab-button" onclick="switchTab('analytics')">Analytics</button>
+      <button class="tab-button" onclick="switchTab('personnel')">Personnel</button>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="loading" class="hidden text-center py-16">
+      <div class="inline-block relative">
+        <div class="loading-spinner"></div>
+      </div>
+      <p class="text-white mt-6 text-lg font-medium">Loading your Google Sheets data...</p>
+    </div>
+
+
+
+    <!-- Overview Tab -->
+    <div id="overview-tab" class="tab-content active">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Dashboard Overview</h2>
+        <div class="flex gap-3">
+          <button onclick="exportToExcel()" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Export Excel
+          </button>
+          <button onclick="exportToPDF()" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            Export PDF
+          </button>
+        </div>
+      </div>
+      
+      <!-- Stats Overview -->
+      <div id="stats-overview" class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="stats-grid">
+          <!-- Stats cards will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div id="summary-section" class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-900 mb-6">Status Distribution</h3>
+        <div id="summary" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+      </div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analytics-tab" class="tab-content">
+      <div class="flex justify-between items-start mb-8">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Analytics Dashboard</h2>
+          <div class="text-gray-600" id="week-info">
+            <span id="current-week"></span> • <span id="week-range"></span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="exportToExcel()" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Excel
+          </button>
+          <button onclick="exportToPDF()" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            PDF
+          </button>
+        </div>
+      </div>
+      
+      <!-- Quick Stats -->
+      <div id="quick-stats-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-8">
+        <!-- Stats cards will be dynamically generated here -->
+      </div>
+      
+      <!-- Charts Section -->
+      <div id="charts-section" class="mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Doughnut Chart -->
+          <div class="card">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Status Distribution</h3>
+            <div style="height: 300px; position: relative;">
+              <canvas id="statusChart"></canvas>
+            </div>
+          </div>
+          
+          <!-- Bar Chart -->
+          <div class="card">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Status Comparison</h3>
+            <div style="height: 300px; position: relative;">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personnel Tab -->
+    <div id="personnel-tab" class="tab-content">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Personnel Management</h2>
+        <div class="flex gap-3">
+          <button onclick="exportToExcel()" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Export Excel
+          </button>
+          <button onclick="exportToPDF()" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            Export PDF
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div id="filters-section" class="mb-8">
+        <div class="card">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Filters & Search</h3>
+          <div class="flex flex-wrap gap-4">
+            <select id="status-filter" class="border-2 border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-900 min-w-[200px] focus:ring-4 focus:ring-blue-200 focus:border-blue-500">
+              <option value="">All Statuses</option>
+            </select>
+            <input type="text" id="search-input" placeholder="Search employees..." class="border-2 border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-900 min-w-[250px] focus:ring-4 focus:ring-blue-200 focus:border-blue-500">
+            <button id="reset-filters" class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-6 py-2 rounded-lg transition-all duration-300 shadow-lg">
+              Reset Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div id="table-section" class="mb-8">
+        <div class="card overflow-hidden">
+          <div class="border-b border-gray-200 pb-4 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Personnel Details</h3>
+            <p class="text-gray-600 mt-1">Complete employee status overview with weekly breakdown</p>
+          </div>
+          <div id="table-container" class="overflow-x-auto"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div id="employee-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+      <div class="glass-card p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-900"></h3>
+          <button onclick="closeEmployeeModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-all duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div id="modal-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Employee cards will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Tooltip -->
+    <div id="employee-tooltip" class="fixed glass-card p-4 z-50 hidden max-w-sm">
+      <div id="tooltip-content">
+        <!-- Tooltip content will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let originalData = [];
+    let filteredData = [];
+    let chart, barChart;
+    let autoRefreshInterval = null;
+    let isAutoRefreshEnabled = false;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      setupEventListeners();
+      updateWeekInfo();
+      setupConnectionMonitoring();
+      // Load PENRO data on page load
+      loadPENROData();
+    });
+
+    // Tab switching functionality
+    function switchTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active class from all tab buttons
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(tabName + '-tab').classList.add('active');
+      
+      // Find and activate the correct button
+      const buttons = document.querySelectorAll('.tab-button');
+      const buttonTexts = ['Overview', 'Analytics', 'Personnel'];
+      const tabNames = ['overview', 'analytics', 'personnel'];
+      const buttonIndex = tabNames.indexOf(tabName);
+      if (buttonIndex >= 0 && buttons[buttonIndex]) {
+        buttons[buttonIndex].classList.add('active');
+      }
+      
+      // Ensure data is displayed when switching tabs
+      if (originalData.length > 0) {
+        const summaryData = getSummary(originalData);
+        
+        // Render appropriate content based on tab
+        if (tabName === 'overview') {
+          renderStats();
+          renderSummary(summaryData);
+        } else if (tabName === 'analytics') {
+          setTimeout(() => {
+            renderCharts(summaryData);
+          }, 100);
+        } else if (tabName === 'personnel') {
+          renderFilters();
+          renderTable(filteredData);
+        }
+      }
+    }
+
+    function setupEventListeners() {
+      // Filter events
+      document.getElementById('status-filter').addEventListener('change', applyFilters);
+      document.getElementById('search-input').addEventListener('input', applyFilters);
+      document.getElementById('reset-filters').addEventListener('click', resetFilters);
+    }
+
+    function updateWeekInfo() {
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const pastDaysOfYear = (now - startOfYear) / 86400000;
+      const weekNumber = Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+      
+      // Calculate week range (Monday to Friday)
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+      const friday = new Date(monday);
+      friday.setDate(monday.getDate() + 4);
+      
+      const formatDate = (date) => {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      };
+      
+      const weekInfo = `Week ${weekNumber} • ${formatDate(monday)} - ${formatDate(friday)}`;
+      document.getElementById('header-week-info').textContent = weekInfo;
+    }
+
+    function setupConnectionMonitoring() {
+      const connectionStatus = document.getElementById('connection-status');
+      
+      function updateConnectionStatus(isLoading = false) {
+        if (isLoading) {
+          connectionStatus.className = 'flex items-center gap-2 px-3 py-2 rounded-full bg-blue-100 border border-blue-200';
+          connectionStatus.innerHTML = `
+            <div class="loading-spinner w-4 h-4 border-2 border-blue-300 border-t-blue-600"></div>
+            <span class="text-sm font-medium text-blue-700">Loading data...</span>
+          `;
+        } else if (navigator.onLine) {
+          connectionStatus.className = 'flex items-center gap-2 px-3 py-2 rounded-full connection-online';
+          connectionStatus.innerHTML = `
+            <div class="pulse-dot bg-green-500"></div>
+            <span class="text-sm font-medium text-green-700">Online</span>
+          `;
+        } else {
+          connectionStatus.className = 'flex items-center gap-2 px-3 py-2 rounded-full connection-offline';
+          connectionStatus.innerHTML = `
+            <div class="pulse-dot bg-red-500"></div>
+            <span class="text-sm font-medium text-red-700">Offline</span>
+          `;
+        }
+      }
+      
+      // Initial check
+      updateConnectionStatus();
+      
+      // Listen for connection changes
+      window.addEventListener('online', () => updateConnectionStatus(false));
+      window.addEventListener('offline', () => updateConnectionStatus(false));
+      
+      // Periodic connection test (every 30 seconds)
+      setInterval(() => {
+        fetch('https://www.google.com/favicon.ico', { 
+          mode: 'no-cors',
+          cache: 'no-cache'
+        }).then(() => {
+          if (!navigator.onLine) {
+            // Force online status if we can reach Google
+            navigator.onLine = true;
+            updateConnectionStatus(false);
+          }
+        }).catch(() => {
+          if (navigator.onLine) {
+            // Force offline status if we can't reach Google
+            navigator.onLine = false;
+            updateConnectionStatus(false);
+          }
+        });
+      }, 30000);
+      
+      // Expose function globally for use during data loading
+      window.updateConnectionStatus = updateConnectionStatus;
+    }
+
+    function showLoading() {
+      document.getElementById('loading').classList.remove('hidden');
+      hideAllSections();
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').classList.add('hidden');
+    }
+
+    function showSuccessMessage(message) {
+      // Create success notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 success-notification z-50 transform transition-all duration-300 translate-x-full';
+      notification.innerHTML = `
+        <div class="flex items-center gap-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <span class="font-medium">${message}</span>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+      }, 100);
+      
+      // Auto-hide after 4 seconds
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 4000);
+    }
+
+    function hideAllSections() {
+      ['stats-overview', 'summary-section', 'charts-section', 'filters-section', 'table-section'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.add('hidden');
+        }
+      });
+    }
+
+    function renderDashboard() {
+      const summaryData = getSummary(filteredData);
+      
+      // Render all dashboard components
+      renderStats();
+      renderSummary(summaryData);
+      renderFilters();
+      renderTable(filteredData);
+      renderCharts(summaryData);
+      
+      // Show all sections
+      showAllSections();
+      
+      // Switch to overview tab after data is loaded
+      switchTab('overview');
+    }
+    
+    function showAllSections() {
+      ['stats-overview', 'summary-section', 'charts-section', 'filters-section', 'table-section'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.remove('hidden');
+        }
+      });
+    }
+
+    function renderStats() {
+      const container = document.getElementById('stats-grid');
+      const totalEmployees = originalData.length;
+      const statusData = getSummary(originalData);
+      const totalStatuses = Object.keys(statusData).length;
+      const mostCommonStatus = Object.entries(statusData).reduce((a, b) => statusData[a[0]] > statusData[b[0]] ? a : b);
+      
+      const stats = [
+        { label: 'Total Employees', value: totalEmployees },
+        { label: 'Status Types', value: totalStatuses },
+        { label: 'Most Common Status', value: mostCommonStatus[0] },
+        { label: 'Count', value: mostCommonStatus[1] }
+      ];
+
+      container.innerHTML = stats.map(stat => `
+        <div class="stat-card">
+          <div class="stat-label">${stat.label}</div>
+          <div class="stat-number">${stat.value}</div>
+        </div>
+      `).join('');
+    }
+
+    function getSummary(data) {
+      const summary = {};
+      data.forEach(row => {
+        // Handle both old format (Status) and new format (weeklyStatus)
+        if (row.weeklyStatus) {
+          try {
+            const weeklyData = JSON.parse(row.weeklyStatus);
+            Object.values(weeklyData).forEach(status => {
+              const cleanStatus = status?.trim();
+              if (cleanStatus) {
+                summary[cleanStatus] = (summary[cleanStatus] || 0) + 1;
+              }
+            });
+          } catch (e) {
+            console.error('Error parsing weeklyStatus:', e);
+          }
+        } else if (row.Status) {
+          const status = row.Status?.trim();
+          if (status) {
+            summary[status] = (summary[status] || 0) + 1;
+          }
+        }
+      });
+      return summary;
+    }
+
+    function renderSummary(summary) {
+      const container = document.getElementById('summary');
+      container.innerHTML = '';
+      
+      Object.entries(summary).forEach(([status, count], index) => {
+        const percentage = ((count / getTotalStatusCount()) * 100).toFixed(1);
+        container.innerHTML += `
+          <div class="card text-center cursor-pointer hover:scale-105 transition-transform duration-300" onclick="showEmployeeModal('${status}')">
+            <div class="text-gray-600 text-sm mb-2">${status}</div>
+            <div class="text-3xl font-bold text-gray-900 mb-2">${count}</div>
+            <div class="text-sm text-gray-500">${percentage}%</div>
+            <div class="progress-bar mt-3" style="width: ${percentage}%"></div>
+          </div>
+        `;
+      });
+    }
+
+    function getTotalStatusCount() {
+      let total = 0;
+      originalData.forEach(row => {
+        if (row.weeklyStatus) {
+          try {
+            const weeklyData = JSON.parse(row.weeklyStatus);
+            total += Object.keys(weeklyData).length;
+          } catch (e) {
+            // Skip invalid data
+          }
+        }
+      });
+      return total;
+    }
+
+    function renderCharts(summary) {
+      renderWeekInfo();
+      renderQuickStats(summary);
+      renderDoughnutChart(summary);
+      renderBarChart(summary);
+    }
+
+    function renderWeekInfo() {
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const pastDaysOfYear = (now - startOfYear) / 86400000;
+      const weekNumber = Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+      
+      // Calculate week range (Monday to Friday)
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+      const friday = new Date(monday);
+      friday.setDate(monday.getDate() + 4);
+      
+      const formatDate = (date) => {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      };
+      
+      document.getElementById('current-week').textContent = `Week ${weekNumber}`;
+      document.getElementById('week-range').textContent = `${formatDate(monday)} - ${formatDate(friday)}`;
+    }
+
+    function renderQuickStats(summary) {
+      const container = document.getElementById('quick-stats-grid');
+      const totalEmployees = originalData.length;
+      
+      // Define colors for different status types
+      const statusColors = {
+        'Office': { bg: 'from-green-400 to-green-600', text: 'text-white' },
+        'WFH': { bg: 'from-blue-400 to-blue-600', text: 'text-white' },
+        'Training': { bg: 'from-purple-400 to-purple-600', text: 'text-white' },
+        'Leave': { bg: 'from-yellow-400 to-yellow-600', text: 'text-white' },
+        'On-Field': { bg: 'from-cyan-400 to-cyan-600', text: 'text-white' },
+        'W/ Office Pass': { bg: 'from-pink-400 to-pink-600', text: 'text-white' },
+        'Absent': { bg: 'from-red-400 to-red-600', text: 'text-white' }
+      };
+      
+      // Create total employees card first
+      let cardsHTML = `
+        <div class="stat-card bg-gradient-to-br from-gray-400 to-gray-600 text-white">
+          <div class="text-3xl font-bold">${totalEmployees}</div>
+          <div class="text-sm font-medium opacity-90">Total Employees</div>
+        </div>
+      `;
+      
+      // Create cards for each status
+      Object.entries(summary).forEach(([status, count]) => {
+        const colors = statusColors[status] || { bg: 'from-gray-400 to-gray-600', text: 'text-white' };
+        
+        cardsHTML += `
+          <div class="stat-card bg-gradient-to-br ${colors.bg} ${colors.text} cursor-pointer hover:scale-105 transition-all duration-300" 
+               onclick="showEmployeeModal('${status}')"
+               onmouseenter="showEmployeeTooltip(event, '${status}')"
+               onmouseleave="hideEmployeeTooltip()">
+            <div class="text-3xl font-bold">${count}</div>
+            <div class="text-sm font-medium opacity-90">${status}</div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = cardsHTML;
+    }
+
+    function renderDoughnutChart(summary) {
+      const ctx = document.getElementById('statusChart').getContext('2d');
+      const labels = Object.keys(summary);
+      const data = Object.values(summary);
+      
+      const colors = [
+        '#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', 
+        '#ec4899', '#06b6d4', '#ef4444', '#6b7280'
+      ];
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: colors.slice(0, labels.length),
+            borderWidth: 3,
+            borderColor: '#ffffff',
+            hoverOffset: 12
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              position: 'bottom',
+              labels: { 
+                color: '#374151', 
+                padding: 20,
+                font: { size: 13, weight: '500' }
+              }
+            }
+          },
+          animation: {
+            animateRotate: true,
+            duration: 1500
+          }
+        }
+      });
+    }
+
+    function renderBarChart(summary) {
+      const ctx = document.getElementById('barChart').getContext('2d');
+      const labels = Object.keys(summary);
+      const data = Object.values(summary);
+
+      if (barChart) barChart.destroy();
+      barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+            borderColor: 'rgba(59, 130, 246, 1)',
+            borderWidth: 2,
+            borderRadius: 8,
+            borderSkipped: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { 
+                color: '#6b7280',
+                font: { size: 12 }
+              },
+              grid: { color: '#e5e7eb' }
+            },
+            x: {
+              ticks: { 
+                color: '#6b7280',
+                font: { size: 12 }
+              },
+              grid: { color: '#e5e7eb' }
+            }
+          },
+          animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+          }
+        }
+      });
+    }
+
+    function renderFilters() {
+      const statusFilter = document.getElementById('status-filter');
+      const statuses = new Set();
+      
+      // Extract all unique statuses from weeklyStatus data
+      originalData.forEach(row => {
+        if (row.weeklyStatus) {
+          try {
+            const weeklyData = JSON.parse(row.weeklyStatus);
+            Object.values(weeklyData).forEach(status => {
+              if (status?.trim()) {
+                statuses.add(status.trim());
+              }
+            });
+          } catch (e) {
+            console.error('Error parsing weeklyStatus for filters:', e);
+          }
+        }
+      });
+      
+      statusFilter.innerHTML = '<option value="">All Statuses</option>' +
+        [...statuses].sort().map(status => `<option value="${status}">${status}</option>`).join('');
+    }
+
+    function applyFilters() {
+      const statusFilter = document.getElementById('status-filter').value;
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      
+      filteredData = originalData.filter(row => {
+        let matchesStatus = !statusFilter;
+        
+        // Check if any day in weeklyStatus matches the selected status
+        if (statusFilter && row.weeklyStatus) {
+          try {
+            const weeklyData = JSON.parse(row.weeklyStatus);
+            matchesStatus = Object.values(weeklyData).some(status => status?.trim() === statusFilter);
+          } catch (e) {
+            matchesStatus = false;
+          }
+        } else if (!statusFilter) {
+          matchesStatus = true;
+        }
+        
+        const matchesSearch = !searchTerm || [
+          row.name,
+          row.designation,
+          row.weeklyStatus
+        ].some(value => String(value || '').toLowerCase().includes(searchTerm));
+        
+        return matchesStatus && matchesSearch;
+      });
+      
+      const summaryData = getSummary(filteredData);
+      renderSummary(summaryData);
+      renderCharts(summaryData);
+      renderTable(filteredData);
+    }
+
+    function resetFilters() {
+      document.getElementById('status-filter').value = '';
+      document.getElementById('search-input').value = '';
+      filteredData = [...originalData];
+      applyFilters();
+    }
+
+    function loadPENROData() {
+      showLoading();
+      window.updateConnectionStatus(true);
+      
+      console.log('Loading PENRO data from Google Sheets CSV...');
+      
+      // Your specific CSV URL
+      const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQbsU7Wkz8E_k7KpkNq4VrTfzXgYuoDjVRlt_UJPhdeWLykQZJWO3L4woO8BjjHk6vBaXJmmhXSCFQE/pub?output=csv";
+      
+      Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          console.log('CSV parsing complete:', results);
+          
+          if (results.errors && results.errors.length > 0) {
+            console.warn('CSV parsing errors:', results.errors);
+          }
+          
+          // Filter and process the data
+          const penroData = results.data
+            .filter(row => row.name && row.name.trim() && row.weeklyStatus && row.weeklyStatus.trim())
+            .map((row, index) => {
+              // Debug: Log the raw row data to see what fields are available
+              console.log('Raw CSV row:', row);
+              
+              // Generate photo URL if not provided
+              const photoURL = row.photoURL && row.photoURL.trim() ? 
+                row.photoURL.trim() : 
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(row.name.trim())}&background=random&size=150`;
+              
+              // Check for various timestamp field names that might exist in your CSV
+              const updateTime = row.__updateTime__ || 
+                               row.lastUpdated || 
+                               row['Last Updated'] || 
+                               row.timestamp || 
+                               row.updated || 
+                               'Not available';
+              
+              console.log('Update time found:', updateTime);
+              
+              return {
+                __id__: `penro_${index}`,
+                __createTime__: row.__createTime__ || new Date().toISOString(),
+                __updateTime__: updateTime,
+                name: row.name.trim(),
+                designation: (row.designation || '').trim(),
+                weeklyStatus: row.weeklyStatus.trim(),
+                photoURL: photoURL
+              };
+            });
+          
+          console.log('Processed PENRO data:', penroData);
+          
+          if (penroData.length > 0) {
+            originalData = penroData;
+            filteredData = [...penroData];
+            
+            setTimeout(() => {
+              hideLoading();
+              window.updateConnectionStatus(false);
+              renderDashboard();
+              
+              const summaryData = getSummary(originalData);
+              renderStats();
+              renderSummary(summaryData);
+              renderFilters();
+              renderTable(filteredData);
+              renderCharts(summaryData);
+              
+              showSuccessMessage(`🎉 PENRO data loaded successfully! (${penroData.length} records)`);
+            }, 1000);
+          } else {
+            console.error('No valid data found in CSV');
+            hideLoading();
+            window.updateConnectionStatus(false);
+            showSuccessMessage('⚠️ No valid data found in the CSV. Loading sample data...');
+            setTimeout(() => {
+              loadSampleData();
+            }, 2000);
+          }
+        },
+        error: function(error) {
+          console.error('CSV parsing failed:', error);
+          hideLoading();
+          window.updateConnectionStatus(false);
+          showSuccessMessage('⚠️ Failed to load CSV data. Loading sample data...');
+          setTimeout(() => {
+            loadSampleData();
+          }, 2000);
+        }
+      });
+    }
+
+    function loadSampleData() {
+      console.log('Loading fallback sample data...');
+      
+      // Generate sample data matching your structure
+      const sampleData = [
+        { 
+          __id__: 'W3y0SbDjnmWTjDqZGqleUPKvYYr1',
+          __createTime__: '2025-07-28T01:01:29.618Z',
+          __updateTime__: '2025-08-01T05:53:59.571Z',
+          name: 'BILLY ANTHONY SALAS',
+          weeklyStatus: '{"monday":"Office","tuesday":"Office","friday":"Office","wednesday":"Office","thursday":"Absent"}',
+          photoURL: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+          designation: 'ICT Support Staff - MSD/ICT'
+        },
+        { 
+          __id__: 'WH5jQ9P62tMmWKi6Gsn6OLMzM582',
+          __createTime__: '2025-07-24T08:24:13.919Z',
+          __updateTime__: '2025-08-01T02:37:18.516Z',
+          name: 'Marife E. Abaya',
+          weeklyStatus: '{"friday":"Office","thursday":"Office","monday":"Office","tuesday":"On-Field","wednesday":"W/ Office Pass"}',
+          photoURL: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+          designation: 'Chief, MSD'
+        },
+        { 
+          __id__: 'WOJdGa8ScxXtC8o42HuOvEAaIap2',
+          __createTime__: '2025-07-28T01:11:03.807Z',
+          __updateTime__: '2025-07-28T03:02:34.345Z',
+          name: 'Alma M. Millana',
+          weeklyStatus: '{"monday":"Office","tuesday":"Training","friday":"On-Field","thursday":"On-Field","wednesday":"Training"}',
+          photoURL: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+          designation: 'SVEMS-TSD'
+        },
+        { 
+          __id__: 'ABC123XYZ789',
+          __createTime__: '2025-07-25T09:15:22.123Z',
+          __updateTime__: '2025-08-01T08:30:45.789Z',
+          name: 'John Michael Santos',
+          weeklyStatus: '{"monday":"WFH","tuesday":"WFH","wednesday":"Office","thursday":"Office","friday":"WFH"}',
+          photoURL: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+          designation: 'Software Developer - IT'
+        },
+        { 
+          __id__: 'DEF456UVW012',
+          __createTime__: '2025-07-26T14:22:33.456Z',
+          __updateTime__: '2025-08-01T10:15:30.234Z',
+          name: 'Maria Clara Reyes',
+          weeklyStatus: '{"monday":"Training","tuesday":"Training","wednesday":"Office","thursday":"Leave","friday":"Leave"}',
+          photoURL: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+          designation: 'HR Specialist - Admin'
+        },
+        { 
+          __id__: 'GHI789MNO345',
+          __createTime__: '2025-07-27T11:30:15.789Z',
+          __updateTime__: '2025-08-01T14:22:10.456Z',
+          name: 'Robert Johnson',
+          weeklyStatus: '{"monday":"Office","tuesday":"WFH","wednesday":"WFH","thursday":"Training","friday":"Office"}',
+          photoURL: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+          designation: 'Project Manager - Operations'
+        },
+        { 
+          __id__: 'JKL012PQR678',
+          __createTime__: '2025-07-29T16:45:30.234Z',
+          __updateTime__: '2025-08-01T09:15:45.123Z',
+          name: 'Sarah Williams',
+          weeklyStatus: '{"monday":"Leave","tuesday":"Leave","wednesday":"Office","thursday":"Office","friday":"WFH"}',
+          photoURL: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face',
+          designation: 'Marketing Specialist - Communications'
+        },
+        { 
+          __id__: 'MNO345STU901',
+          __createTime__: '2025-07-30T12:30:45.678Z',
+          __updateTime__: '2025-08-01T11:45:20.345Z',
+          name: 'Michael Chen',
+          weeklyStatus: '{"monday":"Office","tuesday":"Training","wednesday":"Training","thursday":"WFH","friday":"Office"}',
+          photoURL: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face',
+          designation: 'Quality Assurance - Testing'
+        },
+        { 
+          __id__: 'PQR678VWX234',
+          __createTime__: '2025-07-31T08:15:30.123Z',
+          __updateTime__: '2025-08-01T13:20:15.789Z',
+          name: 'Lisa Rodriguez',
+          weeklyStatus: '{"monday":"WFH","tuesday":"Office","wednesday":"On-Field","thursday":"Office","friday":"Training"}',
+          photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face',
+          designation: 'Business Analyst - Finance'
+        },
+        { 
+          __id__: 'STU901YZA567',
+          __createTime__: '2025-08-01T07:45:15.456Z',
+          __updateTime__: '2025-08-01T15:30:40.234Z',
+          name: 'David Thompson',
+          weeklyStatus: '{"monday":"Training","tuesday":"Office","wednesday":"Office","thursday":"Absent","friday":"Office"}',
+          photoURL: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face',
+          designation: 'Network Administrator - IT'
+        }
+      ];
+
+      originalData = sampleData;
+      filteredData = [...sampleData];
+      
+      console.log('Sample data loaded:', originalData);
+      console.log('Filtered data:', filteredData);
+      
+      setTimeout(() => {
+        hideLoading();
+        window.updateConnectionStatus(false);
+        renderDashboard();
+        
+        // Ensure all tabs have data when switching
+        const summaryData = getSummary(originalData);
+        renderStats();
+        renderSummary(summaryData);
+        renderFilters();
+        renderTable(filteredData);
+        renderCharts(summaryData);
+        
+        showSuccessMessage('🎉 Sample data loaded successfully!');
+      }, 1500);
+    }
+
+    function renderTable(data) {
+      const container = document.getElementById('table-container');
+      if (!data || data.length === 0) {
+        container.innerHTML = '<p class="text-gray-600 text-center p-8">No data to display</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <table class="min-w-full">
+          <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+            <tr>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 uppercase tracking-wider">Photo</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 uppercase tracking-wider">Name</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 uppercase tracking-wider">Designation</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 uppercase tracking-wider">Weekly Status</th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 uppercase tracking-wider">Last Updated</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            ${data.map((row, index) => {
+              let weeklyStatusDisplay = '';
+              if (row.weeklyStatus) {
+                try {
+                  const weeklyData = JSON.parse(row.weeklyStatus);
+                  // Define the correct order of days
+                  const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+                  const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+                  
+                  weeklyStatusDisplay = dayOrder.map((day, index) => {
+                    const status = weeklyData[day];
+                    if (status) {
+                      const statusClass = getStatusClass(status);
+                      return `<div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs text-gray-600 w-12 font-medium">${dayLabels[index]}:</span>
+                        <span class="status-badge ${statusClass}">${status}</span>
+                      </div>`;
+                    }
+                    return '';
+                  }).filter(item => item !== '').join('');
+                } catch (e) {
+                  weeklyStatusDisplay = '<span class="text-red-500">Invalid data</span>';
+                }
+              }
+              
+              // Format the __updateTime__ field properly - use actual data from sheets
+              let lastUpdated = 'No update time';
+              if (row.__updateTime__ && row.__updateTime__.trim() !== '') {
+                try {
+                  // Handle different timestamp formats from Google Sheets
+                  let dateStr = row.__updateTime__.trim();
+                  
+                  // If it's already a simple date format, try to improve it
+                  if (dateStr.includes('/') || dateStr.includes('-')) {
+                    const updateDate = new Date(dateStr);
+                    if (!isNaN(updateDate.getTime())) {
+                      lastUpdated = updateDate.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      }) + ' at ' + updateDate.toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      });
+                    } else {
+                      lastUpdated = dateStr;
+                    }
+                  } else {
+                    // Try to parse as ISO timestamp
+                    const updateDate = new Date(dateStr);
+                    if (!isNaN(updateDate.getTime())) {
+                      lastUpdated = updateDate.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      }) + ' at ' + updateDate.toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      });
+                    } else {
+                      // If parsing fails, show the raw value
+                      lastUpdated = dateStr;
+                    }
+                  }
+                } catch (e) {
+                  console.error('Error formatting update time:', e, 'Raw value:', row.__updateTime__);
+                  lastUpdated = row.__updateTime__ || 'Invalid date';
+                }
+              }
+              
+              return `
+                <tr class="table-row hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <img src="${row.photoURL || 'https://via.placeholder.com/40'}" 
+                         alt="${row.name}" 
+                         class="w-12 h-12 rounded-full object-cover border-3 border-white shadow-lg"
+                         onerror="this.src='https://via.placeholder.com/40'">
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">${row.name || 'N/A'}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-medium">${row.designation || 'N/A'}</td>
+                  <td class="px-6 py-4">
+                    <div class="space-y-1">
+                      ${weeklyStatusDisplay}
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lastUpdated}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function getStatusClass(status) {
+      switch (status) {
+        case 'Office': return 'Office';
+        case 'WFH': return 'WFH';
+        case 'Training': return 'Training';
+        case 'Leave': return 'Leave';
+        case 'W/ Office Pass': return 'w-office-pass';
+        case 'On-Field': return 'on-field';
+        case 'On Field': return 'on-field';
+        case 'Absent': return 'Absent';
+        default: return '';
+      }
+    }
+
+    // Employee Modal and Tooltip Functions
+    function getEmployeesByStatus(status) {
+      const employees = [];
+      originalData.forEach(employee => {
+        if (employee.weeklyStatus) {
+          try {
+            const weeklyData = JSON.parse(employee.weeklyStatus);
+            const hasStatus = Object.values(weeklyData).some(dayStatus => dayStatus?.trim() === status);
+            if (hasStatus) {
+              employees.push(employee);
+            }
+          } catch (e) {
+            console.error('Error parsing weeklyStatus:', e);
+          }
+        }
+      });
+      return employees;
+    }
+
+    function showEmployeeModal(status) {
+      const employees = getEmployeesByStatus(status);
+      const modal = document.getElementById('employee-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalContent = document.getElementById('modal-content');
+      
+      modalTitle.textContent = `Employees with ${status} Status`;
+      
+      if (employees.length === 0) {
+        modalContent.innerHTML = '<p class="text-gray-600 text-center col-span-full">No employees found with this status.</p>';
+      } else {
+        modalContent.innerHTML = employees.map(employee => `
+          <div class="card hover:scale-105 transition-all duration-300">
+            <div class="flex items-center space-x-4 mb-4">
+              <img src="${employee.photoURL || 'https://via.placeholder.com/60'}" 
+                   alt="${employee.name}" 
+                   class="w-16 h-16 rounded-full object-cover border-3 border-white shadow-lg"
+                   onerror="this.src='https://via.placeholder.com/60'">
+              <div>
+                <h4 class="font-bold text-gray-900 text-lg">${employee.name}</h4>
+                <p class="text-sm text-gray-600 font-medium">${employee.designation || 'N/A'}</p>
+              </div>
+            </div>
+            <div class="space-y-2">
+              ${getWeeklyStatusDisplay(employee.weeklyStatus)}
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEmployeeModal() {
+      const modal = document.getElementById('employee-modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function showEmployeeTooltip(event, status) {
+      const employees = getEmployeesByStatus(status);
+      const tooltip = document.getElementById('employee-tooltip');
+      const tooltipContent = document.getElementById('tooltip-content');
+      
+      if (employees.length === 0) {
+        tooltipContent.innerHTML = '<p class="text-gray-600">No employees found</p>';
+      } else {
+        const displayEmployees = employees.slice(0, 3); // Show only first 3
+        const remaining = employees.length - 3;
+        
+        tooltipContent.innerHTML = `
+          <div class="space-y-3">
+            ${displayEmployees.map(employee => `
+              <div class="flex items-center space-x-3">
+                <img src="${employee.photoURL || 'https://via.placeholder.com/32'}" 
+                     alt="${employee.name}" 
+                     class="w-8 h-8 rounded-full object-cover border-2 border-white shadow"
+                     onerror="this.src='https://via.placeholder.com/32'">
+                <span class="text-sm font-semibold text-gray-900">${employee.name}</span>
+              </div>
+            `).join('')}
+            ${remaining > 0 ? `<p class="text-xs text-gray-500 mt-3 font-medium">+${remaining} more employees</p>` : ''}
+            <p class="text-xs text-blue-600 mt-3 font-semibold">Click to view all →</p>
+          </div>
+        `;
+      }
+      
+      // Position tooltip
+      const rect = event.target.getBoundingClientRect();
+      tooltip.style.left = rect.left + 'px';
+      tooltip.style.top = (rect.bottom + 10) + 'px';
+      tooltip.classList.remove('hidden');
+    }
+
+    function hideEmployeeTooltip() {
+      const tooltip = document.getElementById('employee-tooltip');
+      tooltip.classList.add('hidden');
+    }
+
+    function getWeeklyStatusDisplay(weeklyStatus) {
+      if (!weeklyStatus) return '<span class="text-gray-500">No status data</span>';
+      
+      try {
+        const weeklyData = JSON.parse(weeklyStatus);
+        const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+        const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+        
+        return dayOrder.map((day, index) => {
+          const status = weeklyData[day];
+          if (status) {
+            const statusClass = getStatusClass(status);
+            return `<div class="flex items-center gap-3">
+              <span class="text-xs text-gray-600 w-12 font-medium">${dayLabels[index]}:</span>
+              <span class="status-badge ${statusClass} text-xs">${status}</span>
+            </div>`;
+          }
+          return '';
+        }).filter(item => item !== '').join('');
+      } catch (e) {
+        return '<span class="text-red-500 text-sm">Invalid data</span>';
+      }
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+      const modal = document.getElementById('employee-modal');
+      if (event.target === modal) {
+        closeEmployeeModal();
+      }
+    });
+
+    // Export Functions (simplified for Google Sheets focus)
+    function exportToExcel() {
+      if (originalData.length === 0) {
+        alert('No data to export. Please load data from Google Sheets first.');
+        return;
+      }
+      
+      // Create a simple CSV export since we don't have XLSX library
+      const csvContent = generateCSV(originalData);
+      downloadCSV(csvContent, 'Personnel_Status_Export.csv');
+      showSuccessMessage('📊 Data exported to CSV successfully!');
+    }
+
+    async function exportToPDF() {
+      if (originalData.length === 0) {
+        alert('No data to export. Please load data from Google Sheets first.');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // Get week information
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const pastDaysOfYear = (now - startOfYear) / 86400000;
+      const weekNumber = Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+      
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+      const friday = new Date(monday);
+      friday.setDate(monday.getDate() + 4);
+      
+      const formatDate = (date) => {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      };
+      
+      // Add title
+      doc.setFontSize(20);
+      doc.setTextColor(59, 130, 246);
+      doc.text('PENRO Personnel Status Dashboard', 20, 20);
+      
+      // Add week info and date
+      doc.setFontSize(12);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Week ${weekNumber} • ${formatDate(monday)} - ${formatDate(friday)}`, 20, 30);
+      doc.text(`Generated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`, 20, 38);
+      
+      // Add summary statistics with colored indicators
+      const summaryData = getSummary(originalData);
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text('Status Summary:', 20, 52);
+      
+      // Status color mapping
+      const statusColors = {
+        'Office': [16, 185, 129],
+        'WFH': [59, 130, 246],
+        'Training': [139, 92, 246],
+        'Leave': [245, 158, 11],
+        'On-Field': [6, 182, 212],
+        'W/ Office Pass': [236, 72, 153],
+        'Absent': [239, 68, 68]
+      };
+      
+      let yPos = 62;
+      Object.entries(summaryData).forEach(([status, count]) => {
+        const color = statusColors[status] || [107, 114, 128];
+        
+        // Draw colored circle indicator
+        doc.setFillColor(color[0], color[1], color[2]);
+        doc.circle(25, yPos - 1, 2, 'F');
+        
+        // Add status text
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`${status}: ${count} employees`, 30, yPos);
+        yPos += 8;
+      });
+
+      // Function to convert image to base64
+      const getImageDataURL = (url) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 40;
+            canvas.height = 40;
+            ctx.drawImage(img, 0, 0, 40, 40);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.onerror = function() {
+            // Create a default avatar if image fails to load
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 40;
+            canvas.height = 40;
+            ctx.fillStyle = '#e5e7eb';
+            ctx.fillRect(0, 0, 40, 40);
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('?', 20, 25);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.src = url;
+        });
+      };
+      
+      // Prepare table data with photos
+      const tableData = [];
+      
+      // Show loading message
+      showSuccessMessage('📸 Loading employee photos for PDF...');
+      
+      for (let i = 0; i < originalData.length; i++) {
+        const employee = originalData[i];
+        
+        // Get image data
+        let imageData = null;
+        try {
+          imageData = await getImageDataURL(employee.photoURL || 'https://via.placeholder.com/40');
+        } catch (e) {
+          console.error('Failed to load image for', employee.name, e);
+        }
+        
+        const row = [
+          imageData, // Photo column
+          (employee.name || '').toUpperCase(), // Name in UPPERCASE
+          (employee.designation || '').toUpperCase() // Designation in UPPERCASE
+        ];
+
+        // Add weekly status columns
+        if (employee.weeklyStatus) {
+          try {
+            const weeklyData = JSON.parse(employee.weeklyStatus);
+            row.push(weeklyData.monday || '');
+            row.push(weeklyData.tuesday || '');
+            row.push(weeklyData.wednesday || '');
+            row.push(weeklyData.thursday || '');
+            row.push(weeklyData.friday || '');
+          } catch (e) {
+            row.push('', '', '', '', '');
+          }
+        } else {
+          row.push('', '', '', '', '');
+        }
+
+        tableData.push(row);
+      }
+
+      // Add table with custom styling and photos
+      doc.autoTable({
+        head: [['Photo', 'Name', 'Designation', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']],
+        body: tableData,
+        startY: yPos + 10,
+        styles: { 
+          fontSize: 7,
+          cellPadding: 3,
+          lineColor: [200, 200, 200],
+          lineWidth: 0.1,
+          minCellHeight: 12
+        },
+        headStyles: { 
+          fillColor: [59, 130, 246],
+          textColor: [255, 255, 255],
+          fontSize: 8,
+          fontStyle: 'bold'
+        },
+        columnStyles: {
+          0: { cellWidth: 15, halign: 'center' }, // Photo column
+          1: { cellWidth: 30, fontStyle: 'bold' }, // Name column
+          2: { cellWidth: 35 }, // Designation column
+          3: { cellWidth: 18 },
+          4: { cellWidth: 18 },
+          5: { cellWidth: 18 },
+          6: { cellWidth: 18 },
+          7: { cellWidth: 18 }
+        },
+        didDrawCell: function(data) {
+          // Add photos to the first column
+          if (data.column.index === 0 && data.cell.section === 'body') {
+            const imageData = data.cell.raw;
+            if (imageData && typeof imageData === 'string' && imageData.startsWith('data:image')) {
+              try {
+                doc.addImage(
+                  imageData, 
+                  'JPEG', 
+                  data.cell.x + 2, 
+                  data.cell.y + 1, 
+                  10, 
+                  10
+                );
+              } catch (e) {
+                console.error('Error adding image to PDF:', e);
+              }
+            }
+          }
+        },
+        didParseCell: function(data) {
+          // Don't show image data as text in photo column
+          if (data.column.index === 0) {
+            data.cell.text = [''];
+          }
+          
+          // Color code status cells
+          if (data.column.index >= 3 && data.column.index <= 7) {
+            const status = data.cell.text[0];
+            if (status && statusColors[status]) {
+              const color = statusColors[status];
+              data.cell.styles.fillColor = [color[0], color[1], color[2]];
+              data.cell.styles.textColor = [255, 255, 255];
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        }
+      });
+
+      // Add footer with total count
+      const finalY = doc.lastAutoTable.finalY || yPos + 50;
+      doc.setFontSize(10);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Total Employees: ${originalData.length}`, 20, finalY + 15);
+      doc.text('Generated by PENRO Personnel Dashboard', 20, finalY + 25);
+
+      // Generate filename
+      const filename = `PENRO_Personnel_Week${weekNumber}_${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}.pdf`;
+      doc.save(filename);
+      showSuccessMessage('📄 PDF with photos exported successfully!');
+    }
+
+    function generateCSV(data) {
+      const headers = ['Name', 'Designation', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Photo URL', 'Last Updated'];
+      const csvRows = [headers.join(',')];
+      
+      data.forEach(row => {
+        const csvRow = [
+          `"${row.name || ''}"`,
+          `"${row.designation || ''}"`,
+        ];
+        
+        // Add weekly status
+        if (row.weeklyStatus) {
+          try {
+            const weeklyData = JSON.parse(row.weeklyStatus);
+            csvRow.push(`"${weeklyData.monday || ''}"`);
+            csvRow.push(`"${weeklyData.tuesday || ''}"`);
+            csvRow.push(`"${weeklyData.wednesday || ''}"`);
+            csvRow.push(`"${weeklyData.thursday || ''}"`);
+            csvRow.push(`"${weeklyData.friday || ''}"`);
+          } catch (e) {
+            csvRow.push('""', '""', '""', '""', '""');
+          }
+        } else {
+          csvRow.push('""', '""', '""', '""', '""');
+        }
+        
+        csvRow.push(`"${row.photoURL || ''}"`);
+        csvRow.push(`"${row.__updateTime__ ? new Date(row.__updateTime__).toLocaleString() : ''}"`);
+        
+        csvRows.push(csvRow.join(','));
+      });
+      
+      return csvRows.join('\n');
+    }
+
+    function downloadCSV(csvContent, filename) {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9690c6a093effec0',t:'MTc1NDE3MTI2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.onkeydown = function(e) {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 'I'.charCodeAt(0))) {
+      return false;
+    }
+  };
+</script>
+
+</html>
+
+
+
+
+
+
+
+
+

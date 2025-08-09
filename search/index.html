@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Google Search Works</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8fafc;
+        }
+        .search-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(66, 133, 244, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+            }
+        }
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .google-blue { color: #4285F4; }
+        .google-red { color: #EA4335; }
+        .google-yellow { color: #FBBC05; }
+        .google-green { color: #34A853; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        <header class="bg-white shadow-sm">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold">
+                        <span class="google-blue">H</span><span class="google-red">o</span><span class="google-yellow">w</span> 
+                        <span class="google-blue">G</span><span class="google-red">o</span><span class="google-yellow">o</span><span class="google-blue">g</span><span class="google-green">l</span><span class="google-red">e</span> 
+                        Search Works
+                    </h1>
+                    <nav>
+                        <ul class="flex space-x-6">
+                            <li><a href="#overview" class="text-gray-600 hover:text-blue-600 transition">Overview</a></li>
+                            <li><a href="#process" class="text-gray-600 hover:text-blue-600 transition">Process</a></li>
+                            <li><a href="#technology" class="text-gray-600 hover:text-blue-600 transition">Technology</a></li>
+                            <li><a href="#tips" class="text-gray-600 hover:text-blue-600 transition">Search Tips</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-10">
+            <!-- Hero Section -->
+            <section class="mb-16 text-center">
+                <h2 class="text-4xl font-bold mb-6">Understanding Google Search</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
+                    From the moment you type in the search box to receiving your results in milliseconds - 
+                    here's how Google's search technology works.
+                </p>
+                
+                <!-- Google Search Bar Demo -->
+                <div class="max-w-2xl mx-auto bg-white rounded-full shadow-lg p-1 flex items-center search-animation mb-8">
+                    <div class="pl-4">
+                        <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" class="w-full py-3 px-4 outline-none text-lg" placeholder="Search Google or type a URL">
+                    <div class="pr-4 flex">
+                        <button class="mx-1">
+                            <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                            </svg>
+                        </button>
+                        <button class="mx-1">
+                            <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded transition">Google Search</button>
+                    <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded transition">I'm Feeling Lucky</button>
+                </div>
+            </section>
+
+            <!-- Overview Section -->
+            <section id="overview" class="mb-16">
+                <h2 class="text-3xl font-bold mb-6 text-center">Search Overview</h2>
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 mb-6 md:mb-0 md:pr-8">
+                            <h3 class="text-2xl font-semibold mb-4">The Power Behind the Search Box</h3>
+                            <p class="text-gray-600 mb-4">
+                                Google's search bar is the gateway to the world's information. When you visit Google's homepage, 
+                                the search bar is the central feature - a simple interface hiding incredibly complex technology.
+                            </p>
+                            <p class="text-gray-600">
+                                Behind this minimalist design lies a sophisticated system that processes over 3.5 billion searches 
+                                per day, delivering results in a fraction of a second by searching through hundreds of billions of webpages.
+                            </p>
+                        </div>
+                        <div class="md:w-1/2">
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg transform rotate-1"></div>
+                                <div class="relative bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                                    <h4 class="text-xl font-semibold mb-4">Google Search By The Numbers</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-center">
+                                            <svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>3.5+ billion searches per day</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>~0.5 seconds average response time</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>Hundreds of billions of webpages indexed</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>200+ factors in ranking algorithm</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>15% of searches are new each day</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Process Section -->
+            <section id="process" class="mb-16">
+                <h2 class="text-3xl font-bold mb-6 text-center">The Search Process</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Step 1 -->
+                    <div class="step-card bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="bg-blue-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-blue-600 font-bold text-xl">1</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Query Input</h3>
+                            <p class="text-gray-600">
+                                As you type in the search box, Google's autocomplete feature predicts what you're looking for based on popular searches and your search history (if you're signed in).
+                            </p>
+                            <div class="mt-4 bg-gray-50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-500 font-medium">Features:</p>
+                                <ul class="text-sm text-gray-600 mt-1 space-y-1">
+                                    <li>• Real-time suggestions</li>
+                                    <li>• Spelling correction</li>
+                                    <li>• Query refinement</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="bg-green-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-green-600 font-bold text-xl">2</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Query Processing</h3>
+                            <p class="text-gray-600">
+                                Google analyzes your search terms to understand intent, breaking down complex queries into understandable concepts and identifying key terms.
+                            </p>
+                            <div class="mt-4 bg-gray-50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-500 font-medium">Processing includes:</p>
+                                <ul class="text-sm text-gray-600 mt-1 space-y-1">
+                                    <li>• Language detection</li>
+                                    <li>• Query understanding</li>
+                                    <li>• Contextual analysis</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="bg-yellow-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-yellow-600 font-bold text-xl">3</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Matching & Ranking</h3>
+                            <p class="text-gray-600">
+                                Google's algorithms search through the index to find matching pages, then rank them based on relevance, authority, freshness, and hundreds of other factors.
+                            </p>
+                            <div class="mt-4 bg-gray-50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-500 font-medium">Ranking factors:</p>
+                                <ul class="text-sm text-gray-600 mt-1 space-y-1">
+                                    <li>• Page relevance</li>
+                                    <li>• Content quality</li>
+                                    <li>• User context</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step-card bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="bg-red-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-red-600 font-bold text-xl">4</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Results Delivery</h3>
+                            <p class="text-gray-600">
+                                The search results page is assembled with organic results, featured snippets, knowledge panels, and other elements tailored to your query.
+                            </p>
+                            <div class="mt-4 bg-gray-50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-500 font-medium">Result types:</p>
+                                <ul class="text-sm text-gray-600 mt-1 space-y-1">
+                                    <li>• Organic listings</li>
+                                    <li>• Rich results</li>
+                                    <li>• Knowledge panels</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technology Section -->
+            <section id="technology" class="mb-16">
+                <h2 class="text-3xl font-bold mb-6 text-center">The Technology Behind Google Search</h2>
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-4">Crawling & Indexing</h3>
+                            <p class="text-gray-600 mb-4">
+                                Before you even type a search, Google's web crawlers (like Googlebot) have already discovered and indexed billions of webpages. 
+                                These automated programs follow links across the web, collecting information about each page.
+                            </p>
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
+                                <h4 class="font-medium text-blue-800 mb-2">The Google Index</h4>
+                                <p class="text-gray-700">
+                                    The index is like a massive library catalog containing information about all the webpages Google knows about. 
+                                    It's hundreds of billions of pages and over 100,000,000 gigabytes in size.
+                                </p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-gray-600">
+                                    Google refreshes its index continuously, with some popular pages being crawled multiple times per day.
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-4">AI & Machine Learning</h3>
+                            <p class="text-gray-600 mb-4">
+                                Modern Google Search relies heavily on artificial intelligence systems like BERT and MUM to understand the nuances of human language 
+                                and the context of your search.
+                            </p>
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-100 mb-6">
+                                <h4 class="font-medium text-green-800 mb-2">Key AI Technologies</h4>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li><span class="font-medium">RankBrain:</span> Helps Google understand how words relate to concepts</li>
+                                    <li><span class="font-medium">BERT:</span> Processes words in relation to all other words in a sentence</li>
+                                    <li><span class="font-medium">MUM:</span> Understands information across text and images in 75 languages</li>
+                                </ul>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-gray-600">
+                                    Google's AI can now understand searches as complex questions rather than just keywords.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search Features Section -->
+            <section id="tips" class="mb-16">
+                <h2 class="text-3xl font-bold mb-6 text-center">Search Tips & Features</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Search Operators -->
+                    <div class="step-card bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="bg-blue-600 text-white p-4">
+                            <h3 class="text-xl font-semibold">Search Operators</h3>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-600 mb-4">
+                                Power up your searches with these special commands:
+                            </p>
+                            <ul class="space-y-3">
+                                <li class="flex">
+                                    <span class="font-mono bg-gray-100 px-2 rounded text-blue-600 mr-2">"phrase"</span>
+                                    <span class="text-gray-700">Exact match search</span>
+                                </li>
+                                <li class="flex">
+                                    <span class="font-mono bg-gray-100 px-2 rounded text-blue-600 mr-2">site:</span>
+                                    <span class="text-gray-700">Search within a specific website</span>
+                                </li>
+                                <li class="flex">
+                                    <span class="font-mono bg-gray-100 px-2 rounded text-blue-600 mr-2">-term</span>
+                                    <span class="text-gray-700">Exclude a word</span>
+                                </li>
+                                <li class="flex">
+                                    <span class="font-mono bg-gray-100 px-2 rounded text-blue-600 mr-2">OR</span>
+                                    <span class="text-gray-700">Search for either term</span>
+                                </li>
+                                <li class="flex">
+                                    <span class="font-mono bg-gray-100 px-2 rounded text-blue-600 mr-2">filetype:</span>
+                                    <span class="text-gray-700">Search for specific file types</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Voice Search -->
+                    <div class="step-card bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="bg-red-600 text-white p-4">
+                            <h3 class="text-xl font-semibold">Voice Search</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 mb-4">
+                                Click the microphone icon in the search bar to search with your voice. Google's speech recognition technology can understand:
+                            </p>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• Natural language questions</li>
+                                <li>• Multiple languages and accents</li>
+                                <li>• Complex queries and commands</li>
+                            </ul>
+                            <p class="text-sm text-gray-500 mt-4">
+                                Voice search processes over 1 billion searches per month globally.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Google Lens -->
+                    <div class="step-card bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="bg-green-600 text-white p-4">
+                            <h3 class="text-xl font-semibold">Google Lens</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 mb-4">
+                                Click the camera icon to search with images. Google Lens allows you to:
+                            </p>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• Identify objects and landmarks</li>
+                                <li>• Translate text in real-time</li>
+                                <li>• Find similar products</li>
+                                <li>• Solve math problems</li>
+                                <li>• Identify plants and animals</li>
+                            </ul>
+                            <p class="text-sm text-gray-500 mt-4">
+                                Google Lens can recognize over 1 billion objects.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive Demo Section -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold mb-6 text-center">Interactive Search Journey</h2>
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="relative">
+                            <!-- Search Journey Timeline -->
+                            <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-blue-200"></div>
+                            
+                            <!-- Step 1 -->
+                            <div class="relative z-10 mb-12">
+                                <div class="flex items-center">
+                                    <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                        <div class="w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center">
+                                            <span class="text-white font-bold">1</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-blue-50 rounded-lg p-4 ml-16 w-3/4">
+                                        <h4 class="font-semibold text-blue-800">You Type Your Query</h4>
+                                        <div class="mt-3 bg-white rounded-full shadow p-2 flex items-center">
+                                            <svg class="w-5 h-5 text-gray-400 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                            <span class="ml-2 text-gray-800">weather in manila</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-2">
+                                            As you type, Google's autocomplete suggests popular searches and personalizes based on your history.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2 -->
+                            <div class="relative z-10 mb-12">
+                                <div class="flex items-center justify-end">
+                                    <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                        <div class="w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center">
+                                            <span class="text-white font-bold">2</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-blue-50 rounded-lg p-4 mr-16 w-3/4">
+                                        <h4 class="font-semibold text-blue-800">Query Understanding</h4>
+                                        <div class="mt-3 grid grid-cols-3 gap-2 text-sm">
+                                            <div class="bg-white p-2 rounded border border-blue-200 text-center">weather</div>
+                                            <div class="bg-white p-2 rounded border border-blue-200 text-center">in</div>
+                                            <div class="bg-white p-2 rounded border border-blue-200 text-center">manila</div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-2">
+                                            Google analyzes your query to understand intent - you want current weather information for Manila, Philippines.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3 -->
+                            <div class="relative z-10 mb-12">
+                                <div class="flex items-center">
+                                    <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                        <div class="w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center">
+                                            <span class="text-white font-bold">3</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-blue-50 rounded-lg p-4 ml-16 w-3/4">
+                                        <h4 class="font-semibold text-blue-800">Index Matching</h4>
+                                        <div class="mt-3 flex space-x-2">
+                                            <div class="bg-white p-2 rounded border border-blue-200 text-xs flex-1 text-center">Weather.gov</div>
+                                            <div class="bg-white p-2 rounded border border-blue-200 text-xs flex-1 text-center">AccuWeather</div>
+                                            <div class="bg-white p-2 rounded border border-blue-200 text-xs flex-1 text-center">Weather Channel</div>
+                                            <div class="bg-white p-2 rounded border border-blue-200 text-xs flex-1 text-center">PAGASA</div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-2">
+                                            Google searches its index for relevant pages about Manila weather, including local Philippine weather services.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 4 -->
+                            <div class="relative z-10">
+                                <div class="flex items-center justify-end">
+                                    <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                        <div class="w-10 h-10 rounded-full bg-blue-500 border-4 border-white flex items-center justify-center">
+                                            <span class="text-white font-bold">4</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-blue-50 rounded-lg p-4 mr-16 w-3/4">
+                                        <h4 class="font-semibold text-blue-800">Results Delivery</h4>
+                                        <div class="mt-3 bg-white rounded-lg border border-gray-200 p-3">
+                                            <div class="flex justify-between items-center">
+                                                <div>
+                                                    <div class="text-lg font-medium">Manila, Philippines</div>
+                                                    <div class="text-sm text-gray-600">Monday 10:30 AM</div>
+                                                </div>
+                                                <div class="text-3xl">32°C</div>
+                                            </div>
+                                            <div class="text-sm mt-2">Partly Cloudy · Humidity: 75%</div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-2">
+                                            Google displays a weather knowledge panel with current conditions, followed by organic search results - all in ~0.5 seconds.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Call to Action -->
+            <section class="text-center">
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
+                    <h2 class="text-3xl font-bold mb-4">Search Smarter, Not Harder</h2>
+                    <p class="text-xl mb-6 max-w-2xl mx-auto">
+                        Google's search technology is constantly evolving to better understand your queries and provide the most relevant results.
+                    </p>
+                    <div class="max-w-xl mx-auto bg-white rounded-full shadow-lg p-1 flex items-center mb-6">
+                        <div class="pl-4">
+                            <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" class="w-full py-3 px-4 outline-none text-gray-800" placeholder="Try a search now">
+                        <div class="pr-2">
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-2 transition">
+                                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-blue-100">
+                        Discover the power of Google Search with over 3.5 billion searches processed every day.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-gray-800 text-white py-8 mt-16">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between">
+                    <div class="mb-6 md:mb-0">
+                        <h2 class="text-2xl font-bold mb-2">
+                            <span class="google-blue">G</span><span class="google-red">o</span><span class="google-yellow">o</span><span class="google-blue">g</span><span class="google-green">l</span><span class="google-red">e</span> 
+                            Search
+                        </h2>
+                        <p class="text-gray-400">Organizing the world's information since 1998</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-3">Learn More</h4>
+                            <ul class="space-y-2 text-gray-400">
+                                <li><a href="#" class="hover:text-white transition">How Search Works</a></li>
+                                <li><a href="#" class="hover:text-white transition">Search Features</a></li>
+                                <li><a href="#" class="hover:text-white transition">Search Console</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-3">Resources</h4>
+                            <ul class="space-y-2 text-gray-400">
+                                <li><a href="#" class="hover:text-white transition">Search Help</a></li>
+                                <li><a href="#" class="hover:text-white transition">Search Operators</a></li>
+                                <li><a href="#" class="hover:text-white transition">Advanced Search</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-3">Company</h4>
+                            <ul class="space-y-2 text-gray-400">
+                                <li><a href="#" class="hover:text-white transition">About Google</a></li>
+                                <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                                <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                    <p>© 2023 Educational Content - How Google Search Works</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Simple search bar functionality
+        const searchInputs = document.querySelectorAll('input[type="text"]');
+        searchInputs.forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    alert('In a real implementation, this would perform a Google search for: "' + this.value + '"');
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9616d66d40f0fec4',t:'MTc1Mjg5MjY1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.onkeydown = function(e) {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 'I'.charCodeAt(0))) {
+      return false;
+    }
+  };
+</script>
+</html>
