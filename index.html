@@ -79,7 +79,7 @@
 
 <!--Centered News Card -->
 <div class="flex justify-center mt-4 mb-8">
-  <div class="glass rounded-xl max-w-2xl w-full p-2 text-black shadow-lg border-2 border-red-600">
+  <div class="glass rounded-xl max-w-2xl w-full p-2 text-black shadow-lg border-2 border-red-600 bg-white bg-opacity-60">
     <h3 class="text-2xl font-bold mb-2 text-green-800 text-center">🌿DENR-XI PENRO DDN Latest Services</h3>
     <p class="mb-4 text-center">Loading news...</p>
     <iframe 
@@ -296,7 +296,8 @@
     onAuthStateChanged,
     GoogleAuthProvider,
     FacebookAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    signOut
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore,
@@ -498,6 +499,12 @@
     } catch (err) {
       alert("Error saving profile: " + err.message);
     }
+  };
+
+  window.logout = async () => {
+    await signOut(auth);
+    // Optionally, reload the page to reset all state
+    window.location.reload();
   };
 </script>
 

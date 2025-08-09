@@ -239,7 +239,7 @@
     window.logout = async () => {
       try {
         await signOut(auth);
-        window.location.href = "index.html";
+        window.location.href = "/index.html"; // Redirect to root login portal
       } catch (err) {
         alert("Logout failed: " + err.message);
       }
