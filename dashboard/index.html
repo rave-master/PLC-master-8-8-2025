@@ -187,6 +187,8 @@
       let base = "border border-gray-400";
       if (s.includes("office")) return `${base} bg-green-200 text-green-800 font-bold`;
       if (s.includes("leave")) return `${base} bg-red-200 text-red-800 font-bold`;
+      if (s.includes("am")) return `${base} bg-red-300 text-red-800 font-bold`;
+      if (s.includes("pm")) return `${base} bg-red-300 text-red-800 font-bold`;
       if (s.includes("home")) return `${base} bg-blue-200 text-blue-800 font-bold`;
       if (s.includes("out")) return `${base} bg-yellow-200 text-yellow-800 font-bold`;
       if (s.includes("field")) return `${base} bg-purple-200 text-purple-800 font-bold`;
@@ -199,6 +201,8 @@
       const s = (status || "").toLowerCase();
       if (s.includes("office")) return `<span title="In the Office">🟢</span>`;
       if (s.includes("leave")) return `<span title="On Leave">🔴</span>`;
+      if (s.includes("am")) return `<span title="Half-Day Am">🔴</span>`;
+      if (s.includes("pm")) return `<span title="Half-Day Pm">🔴</span>`;
       if (s.includes("home")) return `<span title="Work From Home">🔵</span>`;
       if (s.includes("out")) return `<span title="W/ Office Pass">🟡</span>`;
       if (s.includes("field")) return `<span title="On-Field">🟣</span>`;
