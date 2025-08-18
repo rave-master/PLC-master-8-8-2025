@@ -29,7 +29,7 @@ onAuthStateChanged(auth, async (user) => {
     await loadDashboard();
   } else {
     alert("You must be logged in to view the dashboard.");
-    window.location.href = "index.html";
+    window.location.href = "/index.html";
   }
 });
 
