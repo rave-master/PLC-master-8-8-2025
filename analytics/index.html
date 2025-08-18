@@ -18,7 +18,7 @@
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       // Not logged in -> redirect to login page
-      window.location.href = 'index.html';
+      window.location.href = '/index.html';
     }
     // else do nothing, user is authenticated
   });
@@ -31,6 +31,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PENRO Personnel Status Dashboard</title>
+  <link rel="icon" href="https://ia601205.us.archive.org/12/items/icon_20250717/icon.png" type="image/png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -187,6 +188,8 @@
       background: linear-gradient(135deg, #667eea, #764ba2);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text; /* Standard version */
+     color: transparent; /* Standard version */
       margin: 12px 0;
     }
     
