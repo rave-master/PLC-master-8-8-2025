@@ -27,6 +27,24 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
+<style>
+  #maintenance-overlay {
+    position: fixed; inset: 0; z-index: 99999;
+    display: grid; place-items: center;
+    background: rgba(15, 23, 42, 0.96); color: #fff;
+    font: 16px/1.5 system-ui, Arial, sans-serif;
+  }
+  #maintenance-box {
+    text-align: center; padding: 2rem 2.5rem; border-radius: 1rem;
+    background: #111827; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    max-width: 32rem;
+  }
+  #maintenance-box h1 { margin: 0 0 .5rem; font-size: 1.5rem; }
+  #maintenance-box p { margin: 0; opacity:.9; }
+  body.maintenance-lock { overflow: hidden; }
+</style>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -146,7 +164,18 @@
       background: linear-gradient(135deg, #ef4444, #dc2626);
       color: white;
     }
-    
+    .Haft-day-AM { 
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    .Haft-day-PM { 
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    .Holiday { 
+      background: linear-gradient(135deg, #ce4d03, #af5e02);
+      color: white;
+    }
     .card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
@@ -287,6 +316,17 @@
 </head>
 <body class="min-h-screen">
   <!-- Header -->
+
+<body class="maintenance-lock">
+  <div id="maintenance-overlay" role="dialog" aria-modal="true" aria-label="Maintenance notice">
+    <div id="maintenance-box">
+      <h1>Sorry for the inconvenience</h1>
+      <p>System under maintenance.</p>
+    </div>
+  </div>
+  <!-- the rest of your existing content continues below -->
+
+
   <div class="glass-card mx-4 mt-6 mb-8 p-6">
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between">
@@ -831,9 +871,13 @@
         'WFH': { bg: 'from-blue-400 to-blue-600', text: 'text-white' },
         'Training': { bg: 'from-purple-400 to-purple-600', text: 'text-white' },
         'Leave': { bg: 'from-yellow-400 to-yellow-600', text: 'text-white' },
+        'Half-day-AM': { bg: 'from-yellow-300 to-yellow-600', text: 'text-white' },
+        'Half-day-PM': { bg: 'from-yellow-800 to-yellow-600', text: 'text-white' },
+        'Holiday': { bg: 'from-blue-200 to-blue-800', text: 'text-white' },
         'On-Field': { bg: 'from-cyan-400 to-cyan-600', text: 'text-white' },
         'W/ Office Pass': { bg: 'from-pink-400 to-pink-600', text: 'text-white' },
         'Absent': { bg: 'from-red-400 to-red-600', text: 'text-white' }
+        
       };
       
       // Create total employees card first
@@ -1028,7 +1072,7 @@
       console.log('Loading PENRO data from Google Sheets CSV...');
       
       // Your specific CSV URL
-      const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQbsU7Wkz8E_k7KpkNq4VrTfzXgYuoDjVRlt_UJPhdeWLykQZJWO3L4woO8BjjHk6vBaXJmmhXSCFQE/pub?output=csv";
+      const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRN9K7Xe4D50bw3-qkAcWLyJvumMnWTmUBsz1ZHowbdjRb1C3z5n90sB7cVFi2Kwb0vaxt8_wT4d1J/pub?output=csv";
       
       Papa.parse(csvUrl, {
         download: true,
@@ -1361,6 +1405,9 @@
         case 'Leave': return 'Leave';
         case 'W/ Office Pass': return 'w-office-pass';
         case 'On-Field': return 'on-field';
+        case 'Half-day AM': return 'Half-day-AM';
+        case 'Half-day PM': return 'Half-day-PM';
+        case 'Holiday': return 'Holiday';
         case 'On Field': return 'on-field';
         case 'Absent': return 'Absent';
         default: return '';
@@ -1556,14 +1603,17 @@
       
       // Status color mapping
       const statusColors = {
-        'Office': [16, 185, 129],
-        'WFH': [59, 130, 246],
-        'Training': [139, 92, 246],
-        'Leave': [245, 158, 11],
-        'On-Field': [6, 182, 212],
-        'W/ Office Pass': [236, 72, 153],
-        'Absent': [239, 68, 68]
-      };
+  'Office': [16, 185, 129],
+  'WFH': [59, 130, 246],
+  'Training': [139, 92, 246],
+  'Leave': [245, 158, 11],
+  'On-Field': [6, 182, 212],
+  'W/ Office Pass': [236, 72, 153],
+  'Absent': [239, 68, 68],
+  'Holiday': [34, 197, 94],     // green shade
+  'Half-day AM': [250, 204, 21], // yellow shade
+  'Half-day PM': [251, 113, 133] // pink/red shade
+};
       
       let yPos = 62;
       Object.entries(summaryData).forEach(([status, count]) => {
