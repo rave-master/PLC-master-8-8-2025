@@ -43,6 +43,20 @@
   #maintenance-box h1 { margin: 0 0 .5rem; font-size: 1.5rem; }
   #maintenance-box p { margin: 0; opacity:.9; }
   body.maintenance-lock { overflow: hidden; }
+
+ #countdown {
+      margin-top: 15px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    #exact-time {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
 </style>
 
 <head>
@@ -316,17 +330,20 @@
 </head>
 <body class="min-h-screen">
   <!-- Header -->
-
+<!--maintenance section-->
+  
 <body class="maintenance-lock">
   <div id="maintenance-overlay" role="dialog" aria-modal="true" aria-label="Maintenance notice">
     <div id="maintenance-box">
       <h1>Sorry for the inconvenience</h1>
-      <p>System under maintenance.</p>
+      <p>System under maintenance.<br>Update will commence in:</p>
+       <div id="countdown">Loading...</div>
+        <div id="exact-time">September 2, 2025 at 1:00 AM PST</div>
     </div>
   </div>
+
+
   <!-- the rest of your existing content continues below -->
-
-
   <div class="glass-card mx-4 mt-6 mb-8 p-6">
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between">
@@ -1072,7 +1089,7 @@
       console.log('Loading PENRO data from Google Sheets CSV...');
       
       // Your specific CSV URL
-      const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRN9K7Xe4D50bw3-qkAcWLyJvumMnWTmUBsz1ZHowbdjRb1C3z5n90sB7cVFi2Kwb0vaxt8_wT4d1J/pub?output=csv";
+      const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQbsU7Wkz8E_k7KpkNq4VrTfzXgYuoDjVRlt_UJPhdeWLykQZJWO3L4woO8BjjHk6vBaXJmmhXSCFQE/pub?gid=379735482&output=csv";
       
       Papa.parse(csvUrl, {
         download: true,
@@ -1831,8 +1848,37 @@
         document.body.removeChild(link);
       }
     }
+   
+    // coutdown maintenance timer
 
+    
+    // Target date (PST: UTC-8 / UTC-7 in daylight savings)
+    const targetDate = new Date("September 2, 2025 01:00:00 GMT-0800"); 
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        document.getElementById("countdown").innerHTML = "Maintenance completed!";
+        clearInterval(timer);
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").innerHTML =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    const timer = setInterval(updateCountdown, 1000);
+    updateCountdown();
+  
   </script>
+
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9690c6a093effec0',t:'MTc1NDE3MTI2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
   <script>
   document.addEventListener("contextmenu", e => e.preventDefault());
